@@ -9,3 +9,4 @@ global using BuildingBlocks.CQRS;
 //global using BuildingBlocks.Exceptions.Handler;
 //global using BuildingBlocks.Exceptions;
 global using ProductsAPI.Models;
+global using ProductsAPI.Exceptions;

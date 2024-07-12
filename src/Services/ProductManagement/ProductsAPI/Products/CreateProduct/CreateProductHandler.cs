@@ -1,6 +1,6 @@
-﻿namespace Catalog.API.Products.CreateProduct
+﻿namespace ProductsAPI.Products.CreateProduct
 {
-    public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId, DateTime CreatedDate, DateTime LastModified)
+    public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId/*, DateTime CreatedDate, DateTime LastModified*/)
          : ICommand<CreateProductResult>;
     public record CreateProductResult(Guid Id);
     internal class CreateProductCommandHandler

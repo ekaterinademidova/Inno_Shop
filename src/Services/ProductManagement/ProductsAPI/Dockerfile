@@ -9,17 +9,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Services/ProductManagement/Catalog.API/Catalog.API.csproj", "Services/ProductManagement/Catalog.API/"]
-RUN dotnet restore "./Services/ProductManagement/Catalog.API/Catalog.API.csproj"
+COPY ["Services/ProductManagement/ProductsAPI/ProductsAPI.csproj", "Services/ProductManagement/ProductsAPI/"]
+RUN dotnet restore "./Services/ProductManagement/ProductsAPI/ProductsAPI.csproj"
 COPY . .
-WORKDIR "/src/Services/ProductManagement/Catalog.API"
-RUN dotnet build "./Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Services/ProductManagement/ProductsAPI"
+RUN dotnet build "./ProductsAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ProductsAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Catalog.API.dll"]
+ENTRYPOINT ["dotnet", "ProductsAPI.dll"]

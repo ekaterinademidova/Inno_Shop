@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  productsdb:
+    image: postgres
+  usersdb:
+    image: postgres
+
+volumes:
+  postgres_products:
+  postgres_users:
+

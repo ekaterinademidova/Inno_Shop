@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  productsdb:
+    container_name: productsdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ProductsDb
+    restart: always
+    ports:
+        - "5432:5432"
+    volumes:
+      - postgres_products:/var/lib/postgresql/data/
+
+  usersdb:
+    container_name: usersdb
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=UsersDb
+    restart: always
+    ports:
+        - "5431:5432"
+    volumes:
+      - postgres_users:/var/lib/postgresql/data/

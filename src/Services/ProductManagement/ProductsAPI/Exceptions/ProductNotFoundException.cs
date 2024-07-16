@@ -1,7 +1,7 @@
 ﻿namespace ProductsAPI.Exceptions
 {
-    public class ProductNotFoundException : Exception
+    public class ProductNotFoundException : NotFoundException
     {
-        public ProductNotFoundException(Guid Id) : base("Product not found!") { }
+        public ProductNotFoundException(Guid Id) : base("Product", Id) { }
     }
 }

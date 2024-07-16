@@ -4,12 +4,11 @@
     public record GetProductByNameResult(IEnumerable<Product> Products);
 
     internal class GetProductByNameQueryHandler
-        (IDocumentSession session, ILogger<GetProductByNameQueryHandler> logger)
+        (IDocumentSession session)
         : IQueryHandler<GetProductByNameQuery, GetProductByNameResult>
     {
         public async Task<GetProductByNameResult> Handle(GetProductByNameQuery query, CancellationToken cancellationToken)
         {
-            logger.LogInformation("GetProductByNameQueryHandler.Handle called with {@Query}", query);
             var products = await session.Query<Product>()
                 .Where(p => p.Name.Contains(query.Name))
                 .ToListAsync(cancellationToken);

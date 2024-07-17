@@ -3,6 +3,15 @@
     public record CreateUserCommand(string Name)
         : ICommand<CreateUserResult>;
     public record CreateUserResult(Guid Id);
+    public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
+    {
+        public CreateUserCommandValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty().WithMessage("Name is required")
+                .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
+        }
+    }
     internal class CreateUserCommandHandler
         (IDocumentSession session)
         : ICommandHandler<CreateUserCommand, CreateUserResult>

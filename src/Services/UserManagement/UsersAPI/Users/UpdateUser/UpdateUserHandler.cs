@@ -3,13 +3,22 @@
     public record UpdateUserCommand(Guid Id, string Name)
         : ICommand<UpdateUserResult>;
     public record UpdateUserResult(bool IsSuccess);
+    public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
+    {
+        public UpdateUserCommandValidator()
+        {
+            RuleFor(command => command.Id).NotEmpty().WithMessage("User ID is required");
+            RuleFor(command => command.Name)
+                .NotEmpty().WithMessage("Name is required")
+                .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
+        }
+    }
     internal class UpdateUserCommandHandler
-        (IDocumentSession session, ILogger<UpdateUserCommandHandler> logger)
+        (IDocumentSession session)
         : ICommandHandler<UpdateUserCommand, UpdateUserResult>
     {
         public async Task<UpdateUserResult> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
-            logger.LogInformation("UpdateUserCommandHandler.Handle called with {@Command}", command);
             var user = await session.LoadAsync<User>(command.Id, cancellationToken);
 
             if (user is null)

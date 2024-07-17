@@ -1,7 +1,7 @@
 ﻿namespace UsersAPI.Exceptions
 {
-    public class UserNotFoundException : Exception
+    public class UserNotFoundException : NotFoundException
     {
-        public UserNotFoundException(Guid Id) : base("User not found!") { }
+        public UserNotFoundException(Guid Id) : base("User", Id) { }
     }
 }

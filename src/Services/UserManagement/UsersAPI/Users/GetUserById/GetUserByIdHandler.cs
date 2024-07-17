@@ -4,12 +4,11 @@
     public record GetUserByIdResult(User User);
 
     internal class GetUserByIdQueryHandler
-        (IDocumentSession session, ILogger<GetUserByIdQueryHandler> logger)
+        (IDocumentSession session)
         : IQueryHandler<GetUserByIdQuery, GetUserByIdResult>
     {
         public async Task<GetUserByIdResult> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
         {
-            logger.LogInformation("GetUserByIdQueryHandler.Handle called with {@Query}", query);
             var user = await session.LoadAsync<User>(query.Id, cancellationToken);
 
             if (user is null)

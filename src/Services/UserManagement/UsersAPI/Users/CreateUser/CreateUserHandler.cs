@@ -1,6 +1,6 @@
 ﻿namespace UsersAPI.Users.CreateUser
 {
-    public record CreateUserCommand(string Name)
+    public record CreateUserCommand(string Name, string Email)
         : ICommand<CreateUserResult>;
     public record CreateUserResult(Guid Id);
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
@@ -10,6 +10,7 @@
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required");
         }
     }
     internal class CreateUserCommandHandler
@@ -21,7 +22,8 @@
             // create User entity from command object
             var user = new User
             {
-                Name = command.Name
+                Name = command.Name,
+                Email = command.Email,
             };
 
             // save to database

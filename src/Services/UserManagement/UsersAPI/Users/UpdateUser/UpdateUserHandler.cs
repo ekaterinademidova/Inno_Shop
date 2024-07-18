@@ -1,6 +1,6 @@
 ﻿namespace UsersAPI.Users.UpdateUser
 {
-    public record UpdateUserCommand(Guid Id, string Name)
+    public record UpdateUserCommand(Guid Id, string Name, string Email)
         : ICommand<UpdateUserResult>;
     public record UpdateUserResult(bool IsSuccess);
     public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
@@ -11,6 +11,7 @@
             RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
+            RuleFor(command => command.Email).NotEmpty().WithMessage("Email is required");
         }
     }
     internal class UpdateUserCommandHandler
@@ -27,6 +28,7 @@
             }
 
             user.Name = command.Name;
+            user.Email = command.Email;
 
             session.Update(user);
             await session.SaveChangesAsync(cancellationToken);

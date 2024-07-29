@@ -1,9 +1,15 @@
-﻿namespace UsersAPI.Users.UpdateUser
-{
-    public record UpdateUserRequest(Guid Id, string Name);
-    public record UpdateUserResponse(bool IsSuccess);
+﻿using UsersApplication.Users.Commands.UpdateUser;
 
-    public class UpdateUserEndpoint : ICarterModule
+namespace UsersAPI.Endpoints
+{
+    // Accepts a UpdateUserRequest object
+    // Maps the request to a UpdateUserCommand
+    // Uses MediatR to send the command to the corresponding handler
+    // Returns a success or error response based on the outcome
+
+    public record UpdateUserRequest(UserDto User);
+    public record UpdateUserResponse(bool IsSuccess);
+    public class UpdateUser : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {

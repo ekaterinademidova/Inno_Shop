@@ -1,8 +1,15 @@
-﻿namespace UsersAPI.Users.CreateUser
+﻿using UsersApplication.Users.Commands.CreateUser;
+
+namespace UsersAPI.Endpoints
 {
-    public record CreateUserRequest(string Name);
+    // Accepts a CreateUserRequest object
+    // Maps the request to a CreateUserCommand
+    // Uses MediatR to send the command to the corresponding handler
+    // Returns a response with the created user's ID
+
+    public record CreateUserRequest(UserDto User);
     public record CreateUserResponse(Guid Id);
-    public class CreateUserEndpoint : ICarterModule
+    public class CreateUser : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {

@@ -1,9 +1,15 @@
-﻿namespace UsersAPI.Users.DeleteUser
+﻿using UsersApplication.Users.Commands.DeleteUser;
+
+namespace UsersAPI.Endpoints
 {
+    // Accepts the order ID as a parameter
+    // Maps the request to a DeleteOrderCommand
+    // Uses MediatR to send the command to the corresponding handler
+    // Returns a success or not found response based on the outcome
+
     //public record DeleteUserRequest(Guid Id);
     public record DeleteUserResponse(bool IsSuccess);
-
-    public class DeleteUserEndpoint : ICarterModule
+    public class DeleteUser : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {

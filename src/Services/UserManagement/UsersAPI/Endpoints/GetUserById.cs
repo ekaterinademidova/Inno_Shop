@@ -1,9 +1,14 @@
-﻿namespace UsersAPI.Users.GetUserById
-{
-    //public record GetUserByIdRequest();
-    public record GetUserByIdResponse(User User);
+﻿using UsersApplication.Users.Queries.GetUserById;
 
-    public class GetUserByIdEndpoint : ICarterModule
+namespace UsersAPI.Endpoints
+{
+    // Accepts a id parameter
+    // Constructs a GetUserByIdQuery
+    // Retrieves and returns matching user
+
+    //public record GetUserByIdRequest();
+    public record GetUserByIdResponse(UserDto User);
+    public class GetUserById : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
@@ -17,6 +22,7 @@
             .WithName("GetUserById")
             .Produces<GetUserByIdResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithSummary("Get User By Id")
             .WithDescription("Get User By Id");
         }

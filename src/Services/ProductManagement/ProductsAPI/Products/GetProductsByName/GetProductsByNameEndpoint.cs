@@ -16,6 +16,7 @@
             .WithName("GetProductByName")
             .Produces<GetProductByNameResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithSummary("Get Product By Name")
             .WithDescription("Get Product By Name");
         }

@@ -7,12 +7,12 @@
     {
         public CreateProductCommandValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
-            RuleFor(x => x.ImageFile).NotEmpty().WithMessage("ImageFile is required");
-            RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
-            RuleFor(x => x.CreatedByUserId).NotEmpty().WithMessage("Creator ID is required");
+            RuleFor(command => command.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+            RuleFor(command => command.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
+            RuleFor(command => command.CreatedByUserId).NotEmpty().WithMessage("Creator ID is required");
         }
     }
     internal class CreateProductCommandHandler

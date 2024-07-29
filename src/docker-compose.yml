@@ -4,9 +4,8 @@ services:
   productsdb:
     image: postgres
   usersdb:
-    image: postgres
+    image: mcr.microsoft.com/mssql/server
 
 volumes:
   postgres_products:
-  postgres_users:
 

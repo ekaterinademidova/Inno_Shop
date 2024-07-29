@@ -16,11 +16,8 @@ services:
   usersdb:
     container_name: usersdb
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=UsersDb
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SwN12345678
     restart: always
     ports:
-        - "5431:5432"
-    volumes:
-      - postgres_users:/var/lib/postgresql/data/
+      - "1433:1433"

@@ -3,9 +3,27 @@ version: '3.4'
 services:
   productsdb:
     image: postgres
+
   usersdb:
     image: mcr.microsoft.com/mssql/server
 
+  messagebroker:
+    image: rabbitmq:management
+
+  productsapi:
+    image: ${DOCKER_REGISTRY-}productsapi
+    build:
+      context: .
+      dockerfile: Services/ProductManagement/ProductsAPI/Dockerfile
+
+  usersapi:
+    image: ${DOCKER_REGISTRY-}usersapi
+    build:
+      context: .
+      dockerfile: Services/UserManagement/UsersAPI/Dockerfile
+
 volumes:
   postgres_products:
+
+
 

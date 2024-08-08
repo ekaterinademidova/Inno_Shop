@@ -16,14 +16,14 @@ namespace UsersInfrastucture.Data.Extensions
 
         private static async Task SeedAsync(ApplicationDbContext context)
         {
-            await SeedUsersWithProductsAsync(context);
+            await SeedUsersAsync(context);
         }
 
-        private static async Task SeedUsersWithProductsAsync(ApplicationDbContext context)
+        private static async Task SeedUsersAsync(ApplicationDbContext context)
         {
             if (!await context.Users.AnyAsync())
             {
-                await context.Users.AddRangeAsync(InitialData.UsersWithProducts);
+                await context.Users.AddRangeAsync(InitialData.Users);
                 await context.SaveChangesAsync();
             }
         }

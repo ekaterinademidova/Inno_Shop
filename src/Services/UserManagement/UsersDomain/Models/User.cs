@@ -1,9 +1,10 @@
-﻿namespace UsersDomain.Models
+﻿using System.ComponentModel;
+using UsersDomain.Enums.Extensions;
+
+namespace UsersDomain.Models
 {
     public class User : Aggregate<UserId>
     {
-        private /*readonly*/ List<Product> _createdProducts = new();
-        public IReadOnlyList<Product> CreatedProducts => _createdProducts.AsReadOnly();
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
         public string Email { get; set; } = default!;
@@ -11,12 +12,19 @@
         public UserRole Role { get; set; } = UserRole.User;
         public UserStatus Status { get; set; } = UserStatus.Inactive;
 
-        public static User Create(UserId id, string firstName, string lastName, string email, string password)
+        public static User Create(UserId id, string firstName, string lastName, string email, string password, UserRole role)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
             ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
             ArgumentException.ThrowIfNullOrWhiteSpace(email);
             ArgumentException.ThrowIfNullOrWhiteSpace(password);
+
+            //ArgumentOutOfRangeException.ThrowIfGreaterThan((int)role, Enum.GetValues(typeof(UserRole)).Cast<int>().Max());
+            //ArgumentOutOfRangeException.ThrowIfLessThan((int)role, EnumTraits<UserRole>.MinValue);
+            //ArgumentOutOfRangeException.ThrowIfGreaterThan((int)role, EnumTraits<UserRole>.MaxValue);
+
+            if (!EnumTraits<UserRole>.IsValid((role)))
+                throw new InvalidEnumArgumentException("The role \"" + role.ToString() + "\" does not exist.");
 
             var user = new User
             {
@@ -32,60 +40,23 @@
             return user;
         }
 
-        public void Update(string firstName, string lastName, string email, string password)
+        public void Update(string firstName, string lastName, string email, string password, UserRole role)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(firstName);
             ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
             ArgumentException.ThrowIfNullOrWhiteSpace(email);
             ArgumentException.ThrowIfNullOrWhiteSpace(password);
 
+            if (!EnumTraits<UserRole>.IsValid((role)))
+                throw new InvalidEnumArgumentException("The role \"" + role.ToString() + "\" does not exist.");
 
             FirstName = firstName;
             LastName = lastName;
             Email = email;
             Password = password;
+            Role = role;
 
             AddDomainEvent(new UserUpdatedEvent(this));
-        }
-
-        public void CreateProduct(string name, string description, decimal price, int quantity)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(name);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
-
-            //var productId = ProductId.Of(Guid.NewGuid());
-            var createdByUserId = Id;
-            //var product = Product.Create(productId, name, description, price, quantity, createdByUserId);
-            var product = new Product(name, description, price, quantity, createdByUserId);
-
-            _createdProducts.Add(product);
-            AddDomainEvent(new CreateProductEvent(this, product));
-        }
-
-        public void UpdateProduct(ProductId productId, string name, string description, decimal price, int quantity)
-        {
-            var product = _createdProducts.FirstOrDefault(x => x.Id == productId);
-
-            if (product is null)
-            {
-                ArgumentNullException.ThrowIfNull(product, "Product is not found.");
-            }
-
-            product.Name = name;
-            product.Description = description;
-            product.Price = price;
-            product.Quantity = quantity;
-            AddDomainEvent(new UpdateProductEvent(this, product));
-        }
-
-        public void DeleteProduct(ProductId productId)
-        {
-            var product = _createdProducts.FirstOrDefault(x => x.Id == productId);
-            if (product is not null)
-            {
-                _createdProducts.Remove(product);
-                AddDomainEvent(new DeleteProductEvent(this, productId));
-            }                       
         }
     }
 }

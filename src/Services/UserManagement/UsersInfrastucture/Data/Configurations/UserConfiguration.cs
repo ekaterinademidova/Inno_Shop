@@ -13,10 +13,6 @@ namespace UsersInfrastucture.Data.Configurations
                 userId => userId.Value,
                 dbId => UserId.Of(dbId));
 
-            builder.HasMany(u => u.CreatedProducts)
-                .WithOne()
-                .HasForeignKey(p => p.CreatedByUserId);
-
             builder.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
             builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
             builder.Property(u => u.Email).HasMaxLength(255).IsRequired();

@@ -1,14 +1,14 @@
-﻿namespace ProductsAPI.Products.UpdateProduct
+﻿using UsersApplication.Products.Commands.UpdateProduct;
+
+namespace UsersAPI.Endpoints
 {
-    //public record UpdateProductRequest(Guid Id, string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId);
     public record UpdateProductRequest(ProductDto Product);
     public record UpdateProductResponse(bool IsSuccess);
-
     public class UpdateProductEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/products", async (UpdateProductRequest request, ISender sender) =>
+            app.MapPut("/users/product", async (UpdateProductRequest request, ISender sender) =>
             {
                 var command = request.Adapt<UpdateProductCommand>();
                 var result = await sender.Send(command);
@@ -17,9 +17,8 @@
                 return Results.Ok(response);
             })
             .WithName("UpdateProduct")
-            .Produces<UpdateProductResponse>(StatusCodes.Status200OK)
+            .Produces<UpdateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithSummary("Update Product")
             .WithDescription("Update Product");
         }

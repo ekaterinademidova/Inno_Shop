@@ -1,7 +1,6 @@
 ﻿namespace UsersApplication.Users.Commands.CreateUser
 {
-    public record CreateUserCommand(UserDto User)
-        : ICommand<CreateUserResult>;
+    public record CreateUserCommand(UserDto User) : ICommand<CreateUserResult>;
     public record CreateUserResult(Guid Id);
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {

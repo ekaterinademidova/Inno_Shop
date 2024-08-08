@@ -1,22 +1,24 @@
 ﻿namespace ProductsAPI.Products.CreateProduct
 {
-    public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId/*, DateTime CreatedDate, DateTime LastModified*/)
+    //public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId)
+    //     : ICommand<CreateProductResult>;
+    public record CreateProductCommand(ProductDto Product)
          : ICommand<CreateProductResult>;
     public record CreateProductResult(Guid Id);
     public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
     {
         public CreateProductCommandValidator()
         {
-            RuleFor(command => command.Name)
+            RuleFor(command => command.Product.Id).NotEmpty().WithMessage("Product Id is required");
+            RuleFor(command => command.Product.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
-            RuleFor(command => command.ImageFile).NotEmpty().WithMessage("ImageFile is required");
-            RuleFor(command => command.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
-            RuleFor(command => command.CreatedByUserId).NotEmpty().WithMessage("Creator ID is required");
+            RuleFor(command => command.Product.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+            RuleFor(command => command.Product.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
+            RuleFor(command => command.Product.CreatedByUserId).NotEmpty().WithMessage("Creator ID is required");
         }
     }
-    internal class CreateProductCommandHandler
-        (IDocumentSession session)
+    internal class CreateProductCommandHandler(IDocumentSession session)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
@@ -24,14 +26,15 @@
             // create Product entity from command object
             var product = new Product
             {
-                Name = command.Name,
-                Description = command.Description,
-                ImageFile = command.ImageFile,
-                Price = command.Price,
-                Quantity = command.Quantity,
-                CreatedByUserId = command.CreatedByUserId,
-                CreatedDate = DateTime.Now,
-                LastModified = DateTime.Now
+                Id = command.Product.Id,
+                Name = command.Product.Name,
+                Description = command.Product.Description,
+                ImageFile = command.Product.ImageFile,
+                Price = command.Product.Price,
+                Quantity = command.Product.Quantity,
+                CreatedByUserId = command.Product.CreatedByUserId,
+                CreatedDate = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow
             };
 
             // save to database

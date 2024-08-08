@@ -12,7 +12,6 @@
             var totalCount = await dbContext.Users.LongCountAsync(cancellationToken);
 
             var users = await dbContext.Users
-                .Include(o => o.CreatedProducts)
                 .AsNoTracking()
                 .OrderBy(u => u.LastName)
                 .ThenBy(u => u.FirstName)

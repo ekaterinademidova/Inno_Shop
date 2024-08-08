@@ -1,7 +1,6 @@
 ﻿namespace UsersApplication.Users.Commands.CreateUser
 {
     public class CreateUserHandler(IApplicationDbContext dbContext)
-        //(IDocumentSession session)
         : ICommandHandler<CreateUserCommand, CreateUserResult>
     {
         public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
@@ -24,17 +23,9 @@
                 firstName: userDto.FirstName,
                 lastName: userDto.LastName,
                 email: userDto.Email,
-                password: userDto.Password
+                password: userDto.Password,
+                role: userDto.Role
             );
-
-
-            if (userDto.CreatedProducts is not null)
-            {
-                foreach (var productDto in userDto.CreatedProducts)
-                {
-                    newUser.CreateProduct(productDto.Name, productDto.Description, productDto.Price, productDto.Quantity);
-                }
-            }
 
             return newUser;
         }

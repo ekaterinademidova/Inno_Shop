@@ -10,11 +10,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/UserManagement/UsersAPI/UsersAPI.csproj", "Services/UserManagement/UsersAPI/"]
-COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
-COPY ["Services/UserManagement/UsersApplication/UsersApplication.csproj", "Services/UserManagement/UsersApplication/"]
-COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
-COPY ["Services/UserManagement/UsersDomain/UsersDomain.csproj", "Services/UserManagement/UsersDomain/"]
-COPY ["Services/UserManagement/UsersInfrastucture/UsersInfrastucture.csproj", "Services/UserManagement/UsersInfrastucture/"]
 RUN dotnet restore "./Services/UserManagement/UsersAPI/UsersAPI.csproj"
 COPY . .
 WORKDIR "/src/Services/UserManagement/UsersAPI"

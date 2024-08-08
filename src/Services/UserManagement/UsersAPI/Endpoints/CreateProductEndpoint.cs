@@ -1,19 +1,21 @@
-﻿namespace ProductsAPI.Products.CreateProduct
+﻿using UsersApplication.Products.Commands.CreateProduct;
+
+namespace UsersAPI.Endpoints
 {
-    //public record CreateProductRequest(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId);
     public record CreateProductRequest(ProductDto Product);
-    public record CreateProductResponse(Guid Id);
+    //public record CreateProductResponse(bool IsSuccess);
+    public record CreateProductResponse(Guid ProductId);
     public class CreateProductEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("/products", async (CreateProductRequest request, ISender sender) =>
+            app.MapPost("/users/product", async (CreateProductRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateProductCommand>();
                 var result = await sender.Send(command);
                 var response = result.Adapt<CreateProductResponse>();
 
-                return Results.Created($"/products/{response.Id}", response);
+                return Results.Ok(response);
             })
             .WithName("CreateProduct")
             .Produces<CreateProductResponse>(StatusCodes.Status201Created)

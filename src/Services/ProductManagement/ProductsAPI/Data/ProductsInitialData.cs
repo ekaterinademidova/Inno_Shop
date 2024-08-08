@@ -64,7 +64,7 @@ namespace ProductsAPI.Data
                 ImageFile = "product-4.png",
                 Price = 470.00M,
                 Quantity = 30,
-                CreatedByUserId = new Guid("ac0e6691-8b4d-45a3-ae2b-582c88ada3bb"),
+                CreatedByUserId = new Guid("3e5af1a9-aa98-44e5-aadc-6b51dbdbc4c1"),
                 CreatedDate = DateTime.Now,
                 LastModified = DateTime.Now
             },
@@ -76,7 +76,7 @@ namespace ProductsAPI.Data
                 ImageFile = "product-5.png",
                 Price = 380.00M,
                 Quantity = 45,
-                CreatedByUserId = new Guid("ac0e6691-8b4d-45a3-ae2b-582c88ada3bb"),
+                CreatedByUserId = new Guid("3e5af1a9-aa98-44e5-aadc-6b51dbdbc4c1"),
                 CreatedDate = DateTime.Now,
                 LastModified = DateTime.Now
             },
@@ -88,7 +88,7 @@ namespace ProductsAPI.Data
                 ImageFile = "product-6.png",
                 Price = 240.00M,
                 Quantity = 5,
-                CreatedByUserId = new Guid("ac0e6691-8b4d-45a3-ae2b-582c88ada3bb"),
+                CreatedByUserId = new Guid("d9d62d60-2119-497b-aeef-56f3aa5ba45a"),
                 CreatedDate = DateTime.Now,
                 LastModified = DateTime.Now
             }

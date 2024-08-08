@@ -31,7 +31,8 @@
                 firstName: userDto.FirstName,
                 lastName: userDto.LastName,
                 email: userDto.Email,
-                password: userDto.Password
+                password: userDto.Password,
+                role: userDto.Role
             );
         }
     }

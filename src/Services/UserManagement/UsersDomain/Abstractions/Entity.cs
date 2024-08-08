@@ -1,6 +1,4 @@
-﻿using static UsersDomain.Abstractions.IEntity;
-
-namespace UsersDomain.Abstractions
+﻿namespace UsersDomain.Abstractions
 {
     public abstract class Entity<T> : IEntity<T>
     {

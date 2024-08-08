@@ -1,7 +1,7 @@
-﻿namespace UsersApplication.Dtos
+﻿namespace ProductsAPI.Dtos
 {
     public class ProductDto
-    {        
+    {
         public Guid Id { get; set; } = default!;
         public string Name { get; set; } = default!;
         public string Description { get; set; } = default!;

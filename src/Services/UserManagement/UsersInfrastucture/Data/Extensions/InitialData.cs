@@ -2,38 +2,43 @@
 {
     internal class InitialData
     {
-        public static IEnumerable<User> UsersWithProducts
+        public static IEnumerable<User> Users
         {
             get
             {
+                var user0 = User.Create(
+                                UserId.Of(new Guid("ac0e6691-8b4d-45a3-ae2b-582c88ada3bb")),
+                                "UserFirstName 0",
+                                "UserLastName 0",
+                                "user0email@gmail.com",
+                                "user0Password",
+                                UserRole.Admin);
+
                 var user1 = User.Create(
-                                UserId.Of(Guid.NewGuid()),
+                                UserId.Of(new Guid("3e5af1a9-aa98-44e5-aadc-6b51dbdbc4c1")),
                                 "UserFirstName 1",
                                 "UserLastName 1",
                                 "user1email@gmail.com",
-                                "userPassword1");
-
-                user1.CreateProduct("ProductName 1", "ProductDescription 1", 200.00M, 10);
-                user1.CreateProduct("ProductName 2", "ProductDescription 2", 150.00M, 30);
+                                "user1Password",
+                                UserRole.User);
 
                 var user2 = User.Create(
-                                UserId.Of(Guid.NewGuid()),
+                                UserId.Of(new Guid("d9d62d60-2119-497b-aeef-56f3aa5ba45a")),
                                 "UserFirstName 2",
                                 "UserLastName 2",
                                 "user2email@gmail.com",
-                                "userPassword2");
-
-                user2.CreateProduct("ProductName 3", "ProductDescription 3", 550.00M, 5);
-                user2.CreateProduct("ProductName 4", "ProductDescription 4", 50.00M, 20);
+                                "user2Password",
+                                UserRole.User);
 
                 var user3 = User.Create(
-                                UserId.Of(Guid.NewGuid()),
+                                UserId.Of(new Guid("096254eb-8e97-4dd1-bbef-43ed7a65ebcc")),
                                 "UserFirstName 3",
                                 "UserLastName 3",
                                 "user3email@gmail.com",
-                                "userPassword3");
+                                "user3Password",
+                                UserRole.User);
 
-                return new List<User> { user1, user2, user3 };
+                return new List<User> { user0, user1, user2, user3 };
             }
         }
     }

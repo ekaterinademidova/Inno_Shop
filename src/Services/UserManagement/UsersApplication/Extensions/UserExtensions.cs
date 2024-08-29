@@ -11,7 +11,7 @@
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
-                Status = user.Status
+                //Status = user.Status
             });
         }
 
@@ -29,7 +29,7 @@
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
-                Status = user.Status
+                //Status = user.Status
             };
         }
     }

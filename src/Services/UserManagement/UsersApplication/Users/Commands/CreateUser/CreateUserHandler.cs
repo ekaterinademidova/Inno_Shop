@@ -1,22 +1,30 @@
-﻿namespace UsersApplication.Users.Commands.CreateUser
+﻿using UsersDomain.ValueObjects;
+
+namespace UsersApplication.Users.Commands.CreateUser
 {
-    public class CreateUserHandler(IApplicationDbContext dbContext)
+    public class CreateUserHandler(IUnitOfWork unitOfWork)
         : ICommandHandler<CreateUserCommand, CreateUserResult>
     {
         public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
         {
+            var existingUser = await unitOfWork.User
+                .GetAsync(filter: u => u.Email == command.User.Email, cancellationToken: cancellationToken);
+                
+            if (existingUser is not null) 
+                throw new UserInvalidException($"The user with email({command.User.Email}) already exists.");
+
             // create User entity from command object
             var user = CreateNewUser(command.User);
 
             // save to database
-            dbContext.Users.Add(user);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await unitOfWork.User.AddAsync(user, cancellationToken);
+            await unitOfWork.SaveAsync(cancellationToken);
 
             // return result
             return new CreateUserResult(user.Id.Value);
         }
 
-        private User CreateNewUser(UserDto userDto)
+        private static User CreateNewUser(UserDto userDto)
         {
             var newUser = User.Create(
                 id: UserId.Of(Guid.NewGuid()),

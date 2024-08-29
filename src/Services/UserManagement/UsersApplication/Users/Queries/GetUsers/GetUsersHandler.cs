@@ -1,6 +1,8 @@
-﻿namespace UsersApplication.Users.Queries.GetUsers
+﻿using UsersApplication.Interfaces.Data;
+
+namespace UsersApplication.Users.Queries.GetUsers
 {
-    public class GetUsersQueryHandler(IApplicationDbContext dbContext)
+    public class GetUsersQueryHandler(IUnitOfWork unitOfWork)
         : IQueryHandler<GetUsersQuery, GetUsersResult>
     {
         public async Task<GetUsersResult> Handle(GetUsersQuery query, CancellationToken cancellationToken)
@@ -9,9 +11,11 @@
             var pageIndex = query.PaginationRequest.PageIndex;
             var pageSize = query.PaginationRequest.PageSize;
 
-            var totalCount = await dbContext.Users.LongCountAsync(cancellationToken);
+            var allUsers = unitOfWork.User.GetAll();
 
-            var users = await dbContext.Users
+            var totalCount = await allUsers.LongCountAsync(cancellationToken);
+
+            var users = await allUsers
                 .AsNoTracking()
                 .OrderBy(u => u.LastName)
                 .ThenBy(u => u.FirstName)

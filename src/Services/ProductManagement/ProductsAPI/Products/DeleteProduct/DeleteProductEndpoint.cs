@@ -13,6 +13,7 @@
                 var response = result.Adapt<DeleteProductResponse>();
                 return Results.Ok(response);
             })
+            .RequireAuthorization()
             .WithName("DeleteProduct")
             .Produces<DeleteProductResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

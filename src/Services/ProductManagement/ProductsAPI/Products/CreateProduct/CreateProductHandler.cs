@@ -1,38 +1,47 @@
-﻿namespace ProductsAPI.Products.CreateProduct
+﻿using ProductsAPI.Interfaces;
+using System.Security.Claims;
+
+namespace ProductsAPI.Products.CreateProduct
 {
-    //public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId)
-    //     : ICommand<CreateProductResult>;
-    public record CreateProductCommand(ProductDto Product)
+    public record CreateProductCommand(string Name, string Description, string ImageFile, decimal Price, int Quantity)
          : ICommand<CreateProductResult>;
     public record CreateProductResult(Guid Id);
     public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
     {
         public CreateProductCommandValidator()
         {
-            RuleFor(command => command.Product.Id).NotEmpty().WithMessage("Product Id is required");
-            RuleFor(command => command.Product.Name)
+            RuleFor(command => command.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .Length(2, 150).WithMessage("Name must be between 2 and 150 characters");
-            RuleFor(command => command.Product.ImageFile).NotEmpty().WithMessage("ImageFile is required");
-            RuleFor(command => command.Product.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
-            RuleFor(command => command.Product.CreatedByUserId).NotEmpty().WithMessage("Creator ID is required");
+            RuleFor(command => command.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+            RuleFor(command => command.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
         }
     }
-    internal class CreateProductCommandHandler(IDocumentSession session)
+    internal class CreateProductCommandHandler
+        (IDocumentSession session, IHttpContextAccessor httpContextAccessor, IUsersServiceClient usersServiceClient)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
-        {
+        {            
+            var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst("userId")) 
+                ?? throw new UnauthorizedAccessException("User ID not found in token.");
+            var userId = Guid.Parse(userIdClaim.Value);
+
+            bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
+            if (!userExists)
+            {
+                throw new UnauthorizedAccessException("User is not authorized to create products.");
+            }
+                        
             // create Product entity from command object
             var product = new Product
             {
-                Id = command.Product.Id,
-                Name = command.Product.Name,
-                Description = command.Product.Description,
-                ImageFile = command.Product.ImageFile,
-                Price = command.Product.Price,
-                Quantity = command.Product.Quantity,
-                CreatedByUserId = command.Product.CreatedByUserId,
+                Name = command.Name,
+                Description = command.Description,
+                ImageFile = command.ImageFile,
+                Price = command.Price,
+                Quantity = command.Quantity,
+                CreatedByUserId = userId,
                 CreatedDate = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow
             };

@@ -1,7 +1,6 @@
 ﻿namespace ProductsAPI.Products.UpdateProduct
 {
-    //public record UpdateProductRequest(Guid Id, string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId);
-    public record UpdateProductRequest(ProductDto Product);
+    public record UpdateProductRequest(Guid Id, string Name, string Description, string ImageFile, decimal Price, int Quantity);
     public record UpdateProductResponse(bool IsSuccess);
 
     public class UpdateProductEndpoint : ICarterModule
@@ -16,6 +15,7 @@
 
                 return Results.Ok(response);
             })
+            .RequireAuthorization()
             .WithName("UpdateProduct")
             .Produces<UpdateProductResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

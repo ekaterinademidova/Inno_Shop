@@ -1,7 +1,6 @@
 ﻿namespace ProductsAPI.Products.CreateProduct
 {
-    //public record CreateProductRequest(string Name, string Description, string ImageFile, decimal Price, int Quantity, Guid CreatedByUserId);
-    public record CreateProductRequest(ProductDto Product);
+    public record CreateProductRequest(string Name, string Description, string ImageFile, decimal Price, int Quantity);
     public record CreateProductResponse(Guid Id);
     public class CreateProductEndpoint : ICarterModule
     {
@@ -15,6 +14,7 @@
 
                 return Results.Created($"/products/{response.Id}", response);
             })
+            .RequireAuthorization()
             .WithName("CreateProduct")
             .Produces<CreateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

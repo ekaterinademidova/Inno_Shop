@@ -10,7 +10,6 @@
         public int Quantity { get; set; } = default!;       
         public Guid CreatedByUserId { get; set; }
         public DateTime CreatedDate {  get; set; }
-        public DateTime LastModified { get; set; }
-        
+        public DateTime LastModified { get; set; }        
     }
 }

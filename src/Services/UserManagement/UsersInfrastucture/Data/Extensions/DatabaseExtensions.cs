@@ -11,8 +11,16 @@ namespace UsersInfrastucture.Data.Extensions
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             context.Database.MigrateAsync().GetAwaiter().GetResult();
 
-            await SeedAsync(context);
-        }
+            context.DisableDomainEvents = true;
+            try
+            {
+                await SeedAsync(context);
+            }
+            finally
+            {
+                context.DisableDomainEvents = false;
+            }
+}
 
         private static async Task SeedAsync(ApplicationDbContext context)
         {

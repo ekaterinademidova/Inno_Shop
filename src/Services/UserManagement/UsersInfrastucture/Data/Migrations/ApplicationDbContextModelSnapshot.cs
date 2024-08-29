@@ -22,6 +22,36 @@ namespace UsersInfrastucture.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("UsersDomain.Models.OperationToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Code")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationType")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("EmailConfirmation");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OperationTokens");
+                });
+
             modelBuilder.Entity("UsersDomain.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -36,6 +66,11 @@ namespace UsersInfrastucture.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -53,18 +88,26 @@ namespace UsersInfrastucture.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("User");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("Inactive");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("UsersDomain.Models.OperationToken", b =>
+                {
+                    b.HasOne("UsersDomain.Models.User", null)
+                        .WithMany("OperationTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UsersDomain.Models.User", b =>
+                {
+                    b.Navigation("OperationTokens");
                 });
 #pragma warning restore 612, 618
         }

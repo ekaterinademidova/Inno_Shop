@@ -22,6 +22,12 @@ namespace UsersInfrastucture.Data.Interceptors
         {
             if (context == null) return;
 
+            // Проверяем, нужно ли обрабатывать доменные события
+            if (context is ApplicationDbContext dbContext && dbContext.DisableDomainEvents)
+            {
+                return; // Если события отключены, просто выходим из метода
+            }
+
             var aggregates = context.ChangeTracker
                 .Entries<IAggregate>()
                 .Where(a => a.Entity.DomainEvents.Any())

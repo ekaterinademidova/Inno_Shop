@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
-using UsersApplication.Data;
+using UsersApplication.Interfaces.Data;
 
 namespace UsersInfrastucture.Data
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
+        public bool DisableDomainEvents { get; set; } = false;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -12,6 +13,7 @@ namespace UsersInfrastucture.Data
         }
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<OperationToken> OperationTokens => Set<OperationToken>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

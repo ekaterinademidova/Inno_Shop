@@ -1,9 +1,8 @@
 ﻿using UsersApplication.Products.Commands.CreateProduct;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Products
 {
     public record CreateProductRequest(ProductDto Product);
-    //public record CreateProductResponse(bool IsSuccess);
     public record CreateProductResponse(Guid ProductId);
     public class CreateProductEndpoint : ICarterModule
     {
@@ -17,6 +16,7 @@ namespace UsersAPI.Endpoints
 
                 return Results.Ok(response);
             })
+            .RequireAuthorization()
             .WithName("CreateProduct")
             .Produces<CreateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

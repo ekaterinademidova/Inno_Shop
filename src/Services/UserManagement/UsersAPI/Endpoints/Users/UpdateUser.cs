@@ -1,6 +1,6 @@
 ﻿using UsersApplication.Users.Commands.UpdateUser;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Users
 {
     // Accepts a UpdateUserRequest object
     // Maps the request to a UpdateUserCommand
@@ -21,6 +21,7 @@ namespace UsersAPI.Endpoints
 
                 return Results.Ok(response);
             })
+            //.RequireAuthorization()
             .WithName("UpdateUser")
             .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

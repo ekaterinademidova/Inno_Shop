@@ -1,9 +1,9 @@
 ﻿using UsersApplication.Users.Commands.DeleteUser;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Users
 {
-    // Accepts the order ID as a parameter
-    // Maps the request to a DeleteOrderCommand
+    // Accepts the user ID as a parameter
+    // Maps the request to a DeleteUserCommand
     // Uses MediatR to send the command to the corresponding handler
     // Returns a success or not found response based on the outcome
 
@@ -19,6 +19,7 @@ namespace UsersAPI.Endpoints
                 var response = result.Adapt<DeleteUserResponse>();
                 return Results.Ok(response);
             })
+            //.RequireAuthorization()
             .WithName("DeleteUser")
             .Produces<DeleteUserResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

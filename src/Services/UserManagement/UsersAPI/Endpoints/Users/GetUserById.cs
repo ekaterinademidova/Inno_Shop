@@ -1,6 +1,6 @@
 ﻿using UsersApplication.Users.Queries.GetUserById;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Users
 {
     // Accepts a id parameter
     // Constructs a GetUserByIdQuery

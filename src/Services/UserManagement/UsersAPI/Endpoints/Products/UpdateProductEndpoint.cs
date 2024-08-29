@@ -1,6 +1,6 @@
 ﻿using UsersApplication.Products.Commands.UpdateProduct;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Products
 {
     public record UpdateProductRequest(ProductDto Product);
     public record UpdateProductResponse(bool IsSuccess);
@@ -16,9 +16,11 @@ namespace UsersAPI.Endpoints
 
                 return Results.Ok(response);
             })
+            .RequireAuthorization()
             .WithName("UpdateProduct")
-            .Produces<UpdateProductResponse>(StatusCodes.Status201Created)
+            .Produces<UpdateProductResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .WithSummary("Update Product")
             .WithDescription("Update Product");
         }

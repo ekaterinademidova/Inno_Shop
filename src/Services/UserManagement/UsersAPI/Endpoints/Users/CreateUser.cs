@@ -1,6 +1,6 @@
 ﻿using UsersApplication.Users.Commands.CreateUser;
 
-namespace UsersAPI.Endpoints
+namespace UsersAPI.Endpoints.Users
 {
     // Accepts a CreateUserRequest object
     // Maps the request to a CreateUserCommand
@@ -22,6 +22,7 @@ namespace UsersAPI.Endpoints
                 return Results.Created($"/users/{response.Id}", response);
 
             })
+            //.RequireAuthorization() 
             .WithName("CreateUser")
             .Produces<CreateUserResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)

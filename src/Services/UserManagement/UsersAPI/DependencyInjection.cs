@@ -17,6 +17,9 @@ namespace UsersAPI
 
         public static WebApplication UseApiServices(this WebApplication app)
         {
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapCarter();
             app.UseExceptionHandler(options => { });
             app.UseHealthChecks("/health",

@@ -9,8 +9,14 @@ namespace UsersDomain.Models
         public string LastName { get; set; } = default!;
         public string Email { get; set; } = default!;
         public string Password { get; set; } = default!;
+        public bool IsConfirmed { get; set; } = false;
         public UserRole Role { get; set; } = UserRole.User;
-        public UserStatus Status { get; set; } = UserStatus.Inactive;
+
+        private readonly List<OperationToken> _operationTokens = new();
+        public IReadOnlyList<OperationToken> OperationTokens => _operationTokens.AsReadOnly();
+
+        public string FullName => $"{FirstName} {LastName}";
+        //public UserStatus Status { get; set; } = UserStatus.Inactive;
 
         public static User Create(UserId id, string firstName, string lastName, string email, string password, UserRole role)
         {
@@ -18,10 +24,6 @@ namespace UsersDomain.Models
             ArgumentException.ThrowIfNullOrWhiteSpace(lastName);
             ArgumentException.ThrowIfNullOrWhiteSpace(email);
             ArgumentException.ThrowIfNullOrWhiteSpace(password);
-
-            //ArgumentOutOfRangeException.ThrowIfGreaterThan((int)role, Enum.GetValues(typeof(UserRole)).Cast<int>().Max());
-            //ArgumentOutOfRangeException.ThrowIfLessThan((int)role, EnumTraits<UserRole>.MinValue);
-            //ArgumentOutOfRangeException.ThrowIfGreaterThan((int)role, EnumTraits<UserRole>.MaxValue);
 
             if (!EnumTraits<UserRole>.IsValid((role)))
                 throw new InvalidEnumArgumentException("The role \"" + role.ToString() + "\" does not exist.");
@@ -32,7 +34,10 @@ namespace UsersDomain.Models
                 FirstName = firstName,
                 LastName = lastName,
                 Email = email,
-                Password = password
+                Password = password,
+                IsConfirmed = false,
+                Role = role,
+                //Status = UserStatus.Inactive
             };
 
             user.AddDomainEvent(new UserCreatedEvent(user));
@@ -50,13 +55,42 @@ namespace UsersDomain.Models
             if (!EnumTraits<UserRole>.IsValid((role)))
                 throw new InvalidEnumArgumentException("The role \"" + role.ToString() + "\" does not exist.");
 
-            FirstName = firstName;
-            LastName = lastName;
-            Email = email;
-            Password = password;
-            Role = role;
+            SetFirstName(firstName);
+            SetLastName(lastName);
+            SetEmail(email);
+            SetPassword(password);
+            SetRole(role);
 
             AddDomainEvent(new UserUpdatedEvent(this));
+        }
+
+        public void SetFirstName(string firstName)
+        {
+            FirstName = firstName;
+        }
+
+        public void SetLastName(string lastName)
+        {
+            LastName = lastName;
+        }
+        public void SetEmail(string email)
+        {
+            Email = email;
+        }
+
+        public void SetPassword(string password)
+        {
+            Password = password;
+        }
+
+        public void SetConfirmation(bool isConfirmed)
+        {
+            IsConfirmed = isConfirmed;
+        }
+
+        public void SetRole(UserRole role)
+        {
+            Role = role;
         }
     }
 }

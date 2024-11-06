@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace UsersInfrastucture.Data.Configurations
+namespace UsersInfrastructure.Data.Configurations
 {
     public class OperationTokenConfiguration : IEntityTypeConfiguration<OperationToken>
     {

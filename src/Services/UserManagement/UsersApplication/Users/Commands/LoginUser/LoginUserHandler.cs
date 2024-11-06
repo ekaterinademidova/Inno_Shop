@@ -1,4 +1,4 @@
-﻿using UsersApplication.Interfaces.Services;
+﻿using UsersApplication.Interfaces.ServiceContracts;
 
 namespace UsersApplication.Users.Commands.LoginUser
 {
@@ -13,7 +13,7 @@ namespace UsersApplication.Users.Commands.LoginUser
                 ?? throw new UserNotFoundException(command.Email);
 
             if (user.Password != command.Password) 
-                throw new UserInvalidException("Invalid password.");
+                throw new UserInvalidDataException("Invalid password.");
 
             var token = authenticationService.Authenticate(user);
 

@@ -21,7 +21,9 @@ namespace UsersApplication.Users.Commands.ResetPassword
 
             if (!token.IsValid())
             {
-                throw new OperationTokenInvalidException(operationType);
+                unitOfWork.OperationToken.Remove(token);
+                await unitOfWork.SaveAsync(cancellationToken);
+                throw new OperationTokenInvalidDataException(operationType);
             }
 
             var user = await unitOfWork.User

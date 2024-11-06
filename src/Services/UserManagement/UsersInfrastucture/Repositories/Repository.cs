@@ -1,8 +1,9 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using UsersApplication.Interfaces.Data;
-using UsersApplication.Interfaces.Repositories;
+using UsersApplication.Interfaces.RepositoryContracts;
 
-namespace UsersInfrastucture.Repositories
+namespace UsersInfrastructure.Repositories
 {
     public class Repository<TEntity, TId> : IRepository<TEntity, TId>
         where TEntity : Entity<TId>
@@ -17,9 +18,9 @@ namespace UsersInfrastucture.Repositories
             dbSet = _dbContext.Set<TEntity>();
         }
 
-        public void Add(TEntity entity)
+        public async Task AddAsync(TEntity entity, CancellationToken cancellationToken)
         {
-            dbSet.Add(entity);
+            await dbSet.AddAsync(entity, cancellationToken);
         }
 
         public void Update(TEntity entity)
@@ -35,52 +36,6 @@ namespace UsersInfrastucture.Repositories
         public void RemoveRange(IEnumerable<TEntity> entity)
         {
             dbSet.RemoveRange(entity);
-        }
-
-        public TEntity? Get(Expression<Func<TEntity, bool>> filter, string? includeProperties = null, bool tracked = false)
-        {
-            IQueryable<TEntity> query;
-            if (tracked)
-            {
-                query = dbSet;
-            }
-            else
-            {
-                query = dbSet.AsNoTracking();
-            }
-            query = query.Where(filter);
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                foreach (var includeProp in includeProperties
-                    .Split(separator, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-            return query.FirstOrDefault();
-        }
-
-        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null, string? includeProperties = null)
-        {
-            IQueryable<TEntity> query = dbSet;
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                foreach (var includeProp in includeProperties
-                    .Split(separator, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-            return query;
-        }
-
-        public async Task AddAsync(TEntity entity, CancellationToken cancellationToken)
-        {
-            await dbSet.AddAsync(entity, cancellationToken);
         }
 
         public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> filter, string? includeProperties = null, bool tracked = false, CancellationToken cancellationToken = default)
@@ -104,6 +59,29 @@ namespace UsersInfrastucture.Repositories
                 }
             }
             return await query.FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>>? filter = null, string? includeProperties = null)
+        {
+            IQueryable<TEntity> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                    .Split(separator, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query;
+        }
+
+        public async Task<long> GetTotalCountAsync(CancellationToken cancellationToken = default)
+        {
+            return await dbSet.LongCountAsync(cancellationToken);
         }
     }
 }

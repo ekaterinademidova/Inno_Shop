@@ -5,8 +5,10 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using ProductsAPI.Interfaces;
 using ProductsAPI.HttpClients;
+using ProductsAPI.Interfaces.HttpClientContracts;
+using ProductsAPI.Interfaces.ServiceContracts;
+using ProductsAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT settings are not configured properly.");
+jwtSettings.ConcatenatedAudiences = string.Join(";", jwtSettings.Audience);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -32,18 +35,15 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
+        ValidAudience = jwtSettings.ConcatenatedAudiences,
         IssuerSigningKey = jwtSettings.GetSymmetricSecurityKey()
     };
 });
 
 builder.Services.AddAuthorization();
-//----------------------------------------------------------------------------------
-
-
 
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddScoped<IApiUserService, ApiUserService>();
 
 var assembly = typeof(Program).Assembly;
 builder.Services.AddMediatR(config =>
@@ -107,7 +107,8 @@ public class JwtSettings
 {
     public string SecretKey { get; set; } = default!;
     public string Issuer { get; set; } = default!;
-    public string Audience { get; set; } = default!;
+    public IEnumerable<string> Audience { get; set; } = default!;
+    public string ConcatenatedAudiences { get; set; } = default!;
     public int ExpireMinutes { get; set; } = default!;
 
     public SymmetricSecurityKey GetSymmetricSecurityKey() => new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));

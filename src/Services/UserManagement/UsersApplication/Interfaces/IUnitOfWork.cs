@@ -1,4 +1,4 @@
-﻿using UsersApplication.Interfaces.Repositories;
+﻿using UsersApplication.Interfaces.RepositoryContracts;
 
 namespace UsersApplication.Interfaces
 {
@@ -6,7 +6,6 @@ namespace UsersApplication.Interfaces
     {
         IUserRepository User { get; }
         IOperationTokenRepository OperationToken { get; }
-        void Save();
-        Task SaveAsync(CancellationToken cancellationToken);
+        Task<bool> SaveAsync(CancellationToken cancellationToken);
     }
 }

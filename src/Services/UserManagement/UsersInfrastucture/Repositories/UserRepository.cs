@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UsersApplication.Interfaces.Data;
-using UsersApplication.Interfaces.Repositories;
+using UsersApplication.Interfaces.RepositoryContracts;
 
-namespace UsersInfrastucture.Repositories
+namespace UsersInfrastructure.Repositories
 {
     public class UserRepository(IApplicationDbContext dbContext) 
         : Repository<User, UserId>(dbContext), IUserRepository

@@ -19,7 +19,7 @@ namespace UsersAPI.Endpoints.Users
                 var response = result.Adapt<DeleteUserResponse>();
                 return Results.Ok(response);
             })
-            //.RequireAuthorization()
+            .RequireAuthorization()
             .WithName("DeleteUser")
             .Produces<DeleteUserResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

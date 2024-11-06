@@ -8,7 +8,7 @@
         public string Email { get; set; } = default!;
         public string Password { get; set; } = default!;
         public bool IsConfirmed { get; set; } = false;
-        public UserRole Role { get; set; } = UserRole.User;
+        //public UserRole Role { get; set; } = UserRole.User;
         //public UserStatus Status { get; set; } = UserStatus.Inactive;
     }
 }

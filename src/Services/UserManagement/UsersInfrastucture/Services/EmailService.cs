@@ -1,117 +1,102 @@
 ﻿using MimeKit;
 using UsersApplication.Interfaces;
-using UsersApplication.Models;
+using UsersApplication.ValueObjects;
 using MailKit.Net.Smtp;
-using UsersApplication.Interfaces.Services;
+using UsersApplication.Interfaces.ServiceContracts;
+using UsersApplication.Interfaces.WrappersContracts;
+using UsersInfrastructure.Wrappers;
 
-namespace UsersInfrastucture.Services
+namespace UsersInfrastructure.Services
 {
-    public class EmailService(EmailSettings emailSettings, IUnitOfWork unitOfWork) : IEmailService
+    internal record EmailDetails(OperationType OperationType, string PathSegment, string Subject, string Description);
+
+    public class EmailService(IEmailSettings emailSettings, IUnitOfWork unitOfWork, ISmtpClientWrapper smtpClientWrapper) : IEmailService
     {
-        public async Task SendPasswordResetAsync(User user, CancellationToken cancellationToken)
+        private static readonly EmailDetails EmailConfirmationDetails = new(
+              OperationType.EmailConfirmation,
+              "confirm-email",
+              "Please confirm your email",
+              "Please confirm your email by clicking this link");
+
+        private static readonly EmailDetails PasswordResetDetails = new(
+            OperationType.PasswordReset,
+            "reset-password",
+            "Password reset",
+            "Reset your password by clicking this link");
+
+        public Task SendEmailConfirmationAsync(User user, CancellationToken cancellationToken)
         {
-            var token = GeneratePasswordResetToken(user.Id);
+            return HandleEmailAsync(user, EmailConfirmationDetails, cancellationToken);
+        }
+
+        public Task SendPasswordResetAsync(User user, CancellationToken cancellationToken)
+        {
+            return HandleEmailAsync(user, PasswordResetDetails, cancellationToken);
+        }
+
+        private async Task HandleEmailAsync(User user, EmailDetails emailDetails, CancellationToken cancellationToken)
+        {
+            var token = await GenerateToken(user.Id, emailDetails.OperationType, cancellationToken);
             if (string.IsNullOrEmpty(token))
-                throw new InvalidOperationException("Error generating password reset token.");
+                throw new InvalidOperationException("Error generating token.");
 
-            var link = GeneratePasswordResetLink(token);
-
-            var message = CreateMimeMessage2(user, link);
-
-            await SendEmailAsync(message, cancellationToken);
-        }
-
-        public async Task SendEmailConfirmationAsync(User user, CancellationToken cancellationToken)
-        {
-            var token = GenerateEmailConfirmationToken(user.Id);
-            if (string.IsNullOrEmpty(token)) 
-                throw new InvalidOperationException("Error generating email confirmation token.");
-
-            var link = GenerateEmailConfirmationLink(token);
-
-            var message = CreateMimeMessage(user, link);
+            var link = GenerateLink(emailDetails.PathSegment, token);
+            var message = CreateMimeMessage(user, link, emailDetails.Subject, emailDetails.Description);
 
             await SendEmailAsync(message, cancellationToken);
         }
-        private string GeneratePasswordResetToken(UserId userId)
+
+        public async Task<string> GenerateToken(UserId userId, OperationType operationType, CancellationToken cancellationToken)
         {
-            var token = OperationToken.Create(userId, OperationType.PasswordReset, 1440);
-            unitOfWork.OperationToken.Add(token);
-            unitOfWork.Save();
+            var token = OperationToken.Create(userId, operationType, 1440);
+            await unitOfWork.OperationToken.AddAsync(token, cancellationToken);
+            await unitOfWork.SaveAsync(cancellationToken);
 
             return token.Code.ToString();
         }
 
-        private string GenerateEmailConfirmationToken(UserId userId)
+        public static string GenerateLink(string pathSegment, string token)
         {
-            var token = OperationToken.Create(userId, OperationType.EmailConfirmation, 1440);
-            unitOfWork.OperationToken.Add(token);
-            unitOfWork.Save();
-
-            return token.Code.ToString();
+            return $"https://localhost:5051/users/{pathSegment}?token={token}";
         }
 
-        private static string GeneratePasswordResetLink(string token)
+        public MimeMessage CreateMimeMessage(User user, string link, string subject, string description)
         {
-            return $"https://localhost:5051/users/reset-password?token={token}";
-        }
-
-        private static string GenerateEmailConfirmationLink(string token)
-        {
-            return $"https://localhost:5051/users/confirm-email?token={token}";
-        }
-
-        private MimeMessage CreateMimeMessage2(User user, string link)
-        {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(emailSettings.SenderName, emailSettings.SenderEmail));
-            message.To.Add(new MailboxAddress(user.FullName, user.Email));
-
-            message.Subject = "Password reset";
-
-            var bodyBuilder = new BodyBuilder
+            var message = new MimeMessage
             {
-                HtmlBody = $"Reset your password by clicking this link: <a href=\"{link}\">{link}</a>"
+                From = { new MailboxAddress(emailSettings.SenderName, emailSettings.SenderEmail) },
+                To = { new MailboxAddress(user.FullName, user.Email) },
+                Subject = subject,
+                Body = new BodyBuilder
+                {
+                    HtmlBody = $"{description}: <a href=\"{link}\">{link}</a>"
+                }.ToMessageBody()
             };
-            message.Body = bodyBuilder.ToMessageBody();
 
             return message;
         }
 
-        private MimeMessage CreateMimeMessage(User user, string link)
+        public async Task SendEmailAsync(MimeMessage message, CancellationToken cancellationToken)
         {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(emailSettings.SenderName, emailSettings.SenderEmail));
-            message.To.Add(new MailboxAddress(user.FullName, user.Email));
-
-            message.Subject = "Please confirm your email";
-
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = $"Please confirm your email by clicking this link: <a href=\"{link}\">{link}</a>"
-            };
-            message.Body = bodyBuilder.ToMessageBody();
-
-            return message;
-        }
-
-        private async Task SendEmailAsync(MimeMessage message, CancellationToken cancellationToken)
-        {
-            using var client = new SmtpClient();
+            //using var client = new SmtpClient();
             try
             {
-                await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.SmtpPort, emailSettings.UseSsl, cancellationToken);
-                await client.AuthenticateAsync(emailSettings.SmtpName, emailSettings.SmtpPassword, cancellationToken);
-                await client.SendAsync(message, cancellationToken);
+                //await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.SmtpPort, emailSettings.UseSsl, cancellationToken);
+                //await client.AuthenticateAsync(emailSettings.SmtpName, emailSettings.SmtpPassword, cancellationToken);
+                //await client.SendAsync(message, cancellationToken);
+
+                await smtpClientWrapper.ConnectAsync(emailSettings.SmtpServer, emailSettings.SmtpPort, emailSettings.UseSsl, cancellationToken);
+                await smtpClientWrapper.AuthenticateAsync(emailSettings.SmtpName, emailSettings.SmtpPassword, cancellationToken);
+                await smtpClientWrapper.SendAsync(message, cancellationToken);
             }
             catch (Exception ex)
             {
-                // Логирование или обработка ошибок
                 throw new InvalidOperationException("Error sending email: " + ex.Message, ex);
             }
             finally
             {
-                await client.DisconnectAsync(true, cancellationToken);
+               // await client.DisconnectAsync(true, cancellationToken);
+                await smtpClientWrapper.DisconnectAsync(true, cancellationToken);
             }
         }
     }

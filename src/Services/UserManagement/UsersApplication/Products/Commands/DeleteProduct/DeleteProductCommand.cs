@@ -9,7 +9,15 @@ namespace UsersApplication.Products.Commands.DeleteProduct
     {
         public DeleteProductCommandValidator()
         {
-            RuleFor(command => command.Id).NotEmpty().WithMessage("Product ID is required");
+            AddRuleForId();
+        }
+
+        private void AddRuleForId()
+        {
+            RuleFor(cmd => cmd.Id)
+                .NotEmpty()
+                .WithErrorCode(DomainErrorCodes.Product.EmptyId)
+                .WithMessage("Product id may not be empty");
         }
     }
 }

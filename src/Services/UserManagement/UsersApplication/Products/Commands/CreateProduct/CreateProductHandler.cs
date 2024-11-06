@@ -1,4 +1,4 @@
-﻿using UsersApplication.Interfaces.HttpClients;
+﻿using UsersApplication.Interfaces.HttpClientContracts;
 
 namespace UsersApplication.Products.Commands.CreateProduct
 {
@@ -7,9 +7,8 @@ namespace UsersApplication.Products.Commands.CreateProduct
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            Guid productId = await productsServiceClient.CreateProductAsync(command.Product);
+            var productId = await productsServiceClient.CreateProductAsync(command.Product);
 
-            // return CreateProductResult result
             return new CreateProductResult(productId);
         }
     }

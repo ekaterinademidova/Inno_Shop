@@ -2,7 +2,7 @@
 {
     public static class EnumTraits<TEnum> where TEnum : struct, Enum
     {
-        private static HashSet<TEnum> _valuesSet;
+        private static readonly HashSet<TEnum> _valuesSet;
         static EnumTraits()
         {
             var type = typeof(TEnum);

@@ -1,10 +1,10 @@
-﻿using UsersApplication.Models;
+﻿using UsersApplication.ValueObjects;
 using UsersApplication.Users.Commands.LoginUser;
 
 namespace UsersAPI.Endpoints.Users
 {
     public record LoginUserRequest(string Email, string Password);
-    public record LoginUserResponse(Token Token);
+    public record LoginUserResponse(JwtToken Token);
     public class LoginUser : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)

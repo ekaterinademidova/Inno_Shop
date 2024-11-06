@@ -1,4 +1,4 @@
-﻿using UsersApplication.Interfaces.HttpClients;
+﻿using UsersApplication.Interfaces.HttpClientContracts;
 
 namespace UsersApplication.Products.Commands.DeleteProduct
 {
@@ -9,7 +9,6 @@ namespace UsersApplication.Products.Commands.DeleteProduct
         {
             bool isSuccess = await productsServiceClient.DeleteProductAsync(command.Id);
 
-            // return DeleteProductResult result
             return new DeleteProductResult(isSuccess);
         }
     }

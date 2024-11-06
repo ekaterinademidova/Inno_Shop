@@ -6,7 +6,15 @@
     {
         public DeleteUserCommandValidator()
         {
-            RuleFor(command => command.UserId).NotEmpty().WithMessage("User ID is required");
+            AddRuleForId();
+        }
+
+        private void AddRuleForId()
+        {
+            RuleFor(cmd => cmd.UserId)
+                .NotEmpty()
+                .WithErrorCode(DomainErrorCodes.User.EmptyId)
+                .WithMessage("User id may not be empty");
         }
     }
 }

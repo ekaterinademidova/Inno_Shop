@@ -21,7 +21,7 @@ namespace UsersAPI.Endpoints.Users
 
                 return Results.Ok(response);
             })
-            //.RequireAuthorization()
+            .RequireAuthorization()
             .WithName("UpdateUser")
             .Produces<UpdateUserResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

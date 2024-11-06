@@ -1,7 +1,7 @@
 ﻿using UsersApplication.Interfaces.Data;
-using UsersApplication.Interfaces.Repositories;
+using UsersApplication.Interfaces.RepositoryContracts;
 
-namespace UsersInfrastucture.Repositories
+namespace UsersInfrastructure.Repositories
 {
     public class OperationTokenRepository(IApplicationDbContext dbContext)
         : Repository<OperationToken, OperationTokenId>(dbContext), IOperationTokenRepository

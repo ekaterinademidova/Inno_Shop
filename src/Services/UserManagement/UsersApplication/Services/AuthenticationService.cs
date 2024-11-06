@@ -1,17 +1,17 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using UsersApplication.Interfaces.Services;
-using UsersApplication.Models;
+using UsersApplication.Interfaces.ServiceContracts;
+using UsersApplication.ValueObjects;
 
-namespace UsersInfrastucture.Services
+namespace UsersApplication.Services
 {
     public class AuthenticationService(JwtSettings jwtSettings) : IAuthenticationService
     {
-        public Token Authenticate(User user)
+        public JwtToken Authenticate(User user)
         {
             var token = GenerateToken(user);
-            return new Token { Value = token };
+            return new JwtToken { Value = token };
         }
 
         private string GenerateToken(User user)
@@ -21,14 +21,14 @@ namespace UsersInfrastucture.Services
             var expiration = DateTime.UtcNow.AddMinutes(jwtSettings.ExpireMinutes);
             var claims = new List<Claim>
             {
-                new("userId", user.Id.Value.ToString()), // change
-                new("userEmail", user.Email),
-                new("userRole", user.Role.ToString())
+                new(ClaimTypes.NameIdentifier, user.Id.Value.ToString()),
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.Role, user.Role.ToString())
             };
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings.Issuer,
-                audience: jwtSettings.Audience,
+                audience: jwtSettings.ConcatenatedAudiences,
                 claims: claims,
                 expires: expiration,
                 signingCredentials: creds);

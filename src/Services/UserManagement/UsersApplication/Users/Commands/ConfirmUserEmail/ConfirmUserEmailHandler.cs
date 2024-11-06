@@ -14,7 +14,9 @@
 
             if (!token.IsValid())
             {
-                throw new OperationTokenInvalidException(operationType);
+                unitOfWork.OperationToken.Remove(token);
+                await unitOfWork.SaveAsync(cancellationToken);
+                throw new OperationTokenInvalidDataException(operationType);
             }
             var user = await unitOfWork.User
                 .GetAsync(filter: u => u.Id == token.UserId, cancellationToken: cancellationToken)
@@ -29,7 +31,6 @@
             unitOfWork.OperationToken.Remove(token);
             await unitOfWork.SaveAsync(cancellationToken);
 
-            // return result
             return new ConfirmUserEmailResult(true);
         }
     }

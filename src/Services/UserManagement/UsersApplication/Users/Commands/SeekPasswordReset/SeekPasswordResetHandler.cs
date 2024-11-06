@@ -1,6 +1,4 @@
-﻿using UsersApplication.Interfaces.Services;
-using UsersApplication.Users.Commands.ConfirmUserEmail;
-using UsersDomain.Abstractions;
+﻿using UsersApplication.Interfaces.ServiceContracts;
 
 namespace UsersApplication.Users.Commands.SeekPasswordReset
 {

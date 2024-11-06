@@ -1,5 +1,5 @@
-﻿global using UsersInfrastucture.Data;
-global using UsersInfrastucture.Data.Interceptors;
+﻿global using UsersInfrastructure.Data;
+//global using UsersInfrastructure.Data.Interceptors;
 global using UsersDomain.Abstractions;
 global using UsersDomain.Enums;
 global using UsersDomain.Models;

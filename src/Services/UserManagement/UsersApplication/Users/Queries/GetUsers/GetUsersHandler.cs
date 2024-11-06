@@ -1,6 +1,4 @@
-﻿using UsersApplication.Interfaces.Data;
-
-namespace UsersApplication.Users.Queries.GetUsers
+﻿namespace UsersApplication.Users.Queries.GetUsers
 {
     public class GetUsersQueryHandler(IUnitOfWork unitOfWork)
         : IQueryHandler<GetUsersQuery, GetUsersResult>
@@ -13,7 +11,8 @@ namespace UsersApplication.Users.Queries.GetUsers
 
             var allUsers = unitOfWork.User.GetAll();
 
-            var totalCount = await allUsers.LongCountAsync(cancellationToken);
+            //var totalCount = await allUsers.CountAsync(cancellationToken);
+            var totalCount = await unitOfWork.User.GetTotalCountAsync(cancellationToken);
 
             var users = await allUsers
                 .AsNoTracking()

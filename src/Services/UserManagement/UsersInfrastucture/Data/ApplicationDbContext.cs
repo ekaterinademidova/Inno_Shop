@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using UsersApplication.Interfaces.Data;
 
-namespace UsersInfrastucture.Data
+namespace UsersInfrastructure.Data
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
@@ -12,8 +12,8 @@ namespace UsersInfrastucture.Data
             
         }
 
-        public DbSet<User> Users => Set<User>();
-        public DbSet<OperationToken> OperationTokens => Set<OperationToken>();
+        public virtual DbSet<User> Users => Set<User>();
+        public virtual DbSet<OperationToken> OperationTokens => Set<OperationToken>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

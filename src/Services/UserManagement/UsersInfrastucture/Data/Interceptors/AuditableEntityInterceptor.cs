@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace UsersInfrastucture.Data.Interceptors
+namespace UsersInfrastructure.Data.Interceptors
 {
     public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
@@ -20,30 +20,15 @@ namespace UsersInfrastucture.Data.Interceptors
         public void UpdateEntities(DbContext? context)
         {
             if (context == null) return;
-
-            //foreach (var entry in context.ChangeTracker.Entries<IEntity>())
-            //{
-            //    if (entry.State == EntityState.Added)
-            //    {
-            //        entry.Entity.CreatedBy = "user";
-            //        entry.Entity.CreatedAt = DateTime.UtcNow;
-            //    }
-
-            //    if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
-            //    {
-            //        entry.Entity.LastModifiedBy = "user";
-            //        entry.Entity.LastModified = DateTime.UtcNow;
-            //    }
-            //}
         }
     }
 
     public static class Extensions
     {
         public static bool HasChangedOwnedEntities(this EntityEntry entry) =>
-            entry.References.Any(r => 
+            entry.References.Any(r =>
                 r.TargetEntry != null &&
-                r.TargetEntry.Metadata.IsOwned() && 
+                r.TargetEntry.Metadata.IsOwned() &&
                 (r.TargetEntry.State == EntityState.Added || r.TargetEntry.State == EntityState.Modified));
     }
 }

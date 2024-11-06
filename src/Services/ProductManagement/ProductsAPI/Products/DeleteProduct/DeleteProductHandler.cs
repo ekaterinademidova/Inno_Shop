@@ -1,5 +1,7 @@
 ﻿using ProductsAPI.HttpClients;
-using ProductsAPI.Interfaces;
+using ProductsAPI.Interfaces.HttpClientContracts;
+using ProductsAPI.Interfaces.ServiceContracts;
+using System.Security.Claims;
 
 namespace ProductsAPI.Products.DeleteProduct
 {
@@ -13,7 +15,7 @@ namespace ProductsAPI.Products.DeleteProduct
         }
     }
     internal class DeleteProductCommandHandler
-        (IDocumentSession session, IHttpContextAccessor httpContextAccessor, IUsersServiceClient usersServiceClient)
+        (IDocumentSession session, IApiUserService apiUserService, IUsersServiceClient usersServiceClient)
         : ICommandHandler<DeleteProductCommand, DeleteProductResult>
     {
         public async Task<DeleteProductResult> Handle(DeleteProductCommand command, CancellationToken cancellationToken)
@@ -21,9 +23,10 @@ namespace ProductsAPI.Products.DeleteProduct
             var product = await session.LoadAsync<Product>(command.Id, cancellationToken)
                 ?? throw new ProductNotFoundException(command.Id);
 
-            var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst("userId"))
-                ?? throw new UnauthorizedAccessException("User ID not found in token.");
-            var userId = Guid.Parse(userIdClaim.Value);
+            //var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier))
+            //    ?? throw new UnauthorizedAccessException("User ID not found in token.");
+            //var userId = Guid.Parse(userIdClaim.Value);
+            var userId = apiUserService.GetUserId();
             bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
 
             if (!userExists || userId != product.CreatedByUserId)

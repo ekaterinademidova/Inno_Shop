@@ -10,8 +10,7 @@
                 LastName = user.LastName,
                 Email = user.Email,
                 Password = user.Password,
-                Role = user.Role,
-                //Status = user.Status
+                //Role = user.Role
             });
         }
 
@@ -28,8 +27,7 @@
                 LastName = user.LastName,
                 Email = user.Email,
                 Password = user.Password,
-                Role = user.Role,
-                //Status = user.Status
+                //Role = user.Role
             };
         }
     }

@@ -6,7 +6,15 @@
     {
         public ConfirmUserEmailCommandValidator()
         {
-            RuleFor(command => command.Token).NotNull().WithMessage("Token is required.");
+            AddRuleForToken();
+        }
+
+        private void AddRuleForToken()
+        {
+            RuleFor(cmd => cmd.Token)
+                .NotEmpty()
+                .WithErrorCode(DomainErrorCodes.OperationToken.EmptyCode)
+                .WithMessage("Token may not be empty");
         }
     }
 }

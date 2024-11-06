@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net.Mail;
-using System.Net;
-using UsersInfrastucture.HttpClients;
-using UsersInfrastucture.HttpClients.Handler;
-using UsersInfrastucture.Services;
+using UsersInfrastructure.HttpClients;
+using UsersInfrastructure.HttpClients.Handler;
+using UsersInfrastructure.Services;
 using UsersApplication.Interfaces.Data;
-using UsersApplication.Interfaces.Services;
-using UsersApplication.Interfaces.HttpClients;
+using UsersApplication.Interfaces.ServiceContracts;
+using UsersApplication.Interfaces.HttpClientContracts;
 using UsersApplication.Interfaces;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using UsersInfrastructure.Data.Interceptors;
+using UsersApplication.Interfaces.WrappersContracts;
+using UsersInfrastructure.Wrappers;
 
-namespace UsersInfrastucture
+namespace UsersInfrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastuctureServices
+        public static IServiceCollection AddInfrastructureServices
             (this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("Database");
@@ -29,7 +30,7 @@ namespace UsersInfrastucture
 
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                //options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseSqlServer(
                     connectionString,
                     sqlServerOptions => {
@@ -63,6 +64,7 @@ namespace UsersInfrastucture
             .AddHttpMessageHandler<AuthorizationHeaderHandler>();
 
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISmtpClientWrapper, SmtpClientWrapper>();
 
             return services;
         }

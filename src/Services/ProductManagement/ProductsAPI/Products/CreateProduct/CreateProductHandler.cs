@@ -1,4 +1,5 @@
-﻿using ProductsAPI.Interfaces;
+﻿using ProductsAPI.Interfaces.HttpClientContracts;
+using ProductsAPI.Interfaces.ServiceContracts;
 using System.Security.Claims;
 
 namespace ProductsAPI.Products.CreateProduct
@@ -18,14 +19,15 @@ namespace ProductsAPI.Products.CreateProduct
         }
     }
     internal class CreateProductCommandHandler
-        (IDocumentSession session, IHttpContextAccessor httpContextAccessor, IUsersServiceClient usersServiceClient)
+        (IDocumentSession session, IApiUserService apiUserService, IUsersServiceClient usersServiceClient)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
-        {            
-            var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst("userId")) 
-                ?? throw new UnauthorizedAccessException("User ID not found in token.");
-            var userId = Guid.Parse(userIdClaim.Value);
+        {
+            //var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)) 
+            //    ?? throw new UnauthorizedAccessException("User ID not found in token.");
+            //var userId = Guid.Parse(userIdClaim.Value);
+            var userId = apiUserService.GetUserId();
 
             bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
             if (!userExists)

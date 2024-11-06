@@ -7,9 +7,9 @@ using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
-using UsersApplication.Interfaces.Services;
-using UsersApplication.Models;
-using UsersInfrastucture.Services;
+using UsersApplication.Interfaces.ServiceContracts;
+using UsersApplication.Services;
+using UsersApplication.ValueObjects;
 
 namespace UsersApplication
 {
@@ -19,24 +19,23 @@ namespace UsersApplication
             (this IServiceCollection services, IConfiguration configuration)
         {
             // Configuration of Email settings
-            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-            var emailSettings = configuration.GetSection("EmailSettings").Get<EmailSettings>()
+            services.Configure<IEmailSettings>(configuration.GetSection("EmailSettings"));
+            var emailSettings = configuration.GetSection("EmailSettings").Get<IEmailSettings>()
                 ?? throw new InvalidOperationException("Email settings are not configured properly.");
             services.AddSingleton(emailSettings);
-
-
 
             // Configuration of JWT settings
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>() 
                 ?? throw new InvalidOperationException("JWT settings are not configured properly.");
+            jwtSettings.ConcatenatedAudiences = string.Join(";", jwtSettings.Audience);
             services.AddSingleton(jwtSettings);
 
             // Configuration of JWT authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;  //???
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {                
@@ -47,14 +46,15 @@ namespace UsersApplication
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtSettings.Issuer,
-                    ValidAudience = jwtSettings.Audience,
+                    ValidAudience = jwtSettings.ConcatenatedAudiences,
                     IssuerSigningKey = jwtSettings.GetSymmetricSecurityKey()
                 };
             });
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddAuthorization();
 
-            //services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
+            services.AddScoped<IApiUserService, ApiUserService>();
 
             services.AddMediatR(config =>
             {

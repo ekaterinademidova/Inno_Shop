@@ -20,7 +20,6 @@ namespace UsersAPI.Endpoints.Users
 
                 return Results.Ok(response);
             })
-            //.RequireAuthorization()
             .WithName("GetUsers")
             .Produces<GetUsersResponse>(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status400BadRequest)

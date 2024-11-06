@@ -1,4 +1,4 @@
-﻿using UsersApplication.Interfaces.HttpClients;
+﻿using UsersApplication.Interfaces.HttpClientContracts;
 
 namespace UsersApplication.Products.Commands.UpdateProduct
 {
@@ -9,7 +9,6 @@ namespace UsersApplication.Products.Commands.UpdateProduct
         {
             bool isSuccess = await productsServiceClient.UpdateProductAsync(command.Product);
 
-            // return UpdateProductResult result
             return new UpdateProductResult(isSuccess);
         }
     }

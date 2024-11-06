@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using ProductsAPI.Interfaces;
+using ProductsAPI.Interfaces.HttpClientContracts;
+using ProductsAPI.Interfaces.ServiceContracts;
+using System.Security.Claims;
 
 namespace ProductsAPI.Products.UpdateProduct
 {
@@ -19,7 +21,7 @@ namespace ProductsAPI.Products.UpdateProduct
         }
     }
     internal class UpdateProductCommandHandler
-        (IDocumentSession session, IHttpContextAccessor httpContextAccessor, IUsersServiceClient usersServiceClient)
+        (IDocumentSession session, IApiUserService apiUserService, IUsersServiceClient usersServiceClient)
         : ICommandHandler<UpdateProductCommand, UpdateProductResult>
     {
         public async Task<UpdateProductResult> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
@@ -27,9 +29,10 @@ namespace ProductsAPI.Products.UpdateProduct
             var product = await session.LoadAsync<Product>(command.Id, cancellationToken)
                 ?? throw new ProductNotFoundException(command.Id);
 
-            var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst("userId"))
-                ?? throw new UnauthorizedAccessException("User ID not found in token.");
-            var userId = Guid.Parse(userIdClaim.Value);
+            //var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier))
+            //    ?? throw new UnauthorizedAccessException("User ID not found in token.");
+            //var userId = Guid.Parse(userIdClaim.Value);
+            var userId = apiUserService.GetUserId();
             bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
 
             if (!userExists || userId != product.CreatedByUserId)

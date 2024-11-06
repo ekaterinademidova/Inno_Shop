@@ -6,10 +6,18 @@
     {
         public SeekPasswordResetCommandValidator()
         {
-            RuleFor(command => command.Email)
-                .NotEmpty().WithMessage("Email is required")
-                .EmailAddress().WithMessage("Email address is invalid")
-                .Length(2, 255).WithMessage("Email must be between 2 and 255 characters");                
+            AddRuleForEmail();
+        }
+
+        private void AddRuleForEmail()
+        {
+            RuleFor(cmd => cmd.Email)
+                .EmailAddress()
+                .WithErrorCode(DomainErrorCodes.User.InvalidEmail)
+                .WithMessage("Email is not a valid email address")
+                .MaximumLength(MaxLengths.User.Email)
+                .WithErrorCode(DomainErrorCodes.User.EmailExceedsMaxLength)
+                .WithMessage($"Email may not be longer than {MaxLengths.User.Email} characters");
         }
     }
 }

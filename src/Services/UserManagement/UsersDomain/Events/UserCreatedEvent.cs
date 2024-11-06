@@ -1,4 +1,4 @@
 ﻿namespace UsersDomain.Events
 {
-    public record UserCreatedEvent(User user) : IDomainEvent;
+    public record UserCreatedEvent(User User) : IDomainEvent;
 }

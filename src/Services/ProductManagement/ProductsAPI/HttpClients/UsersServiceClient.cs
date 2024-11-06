@@ -1,4 +1,4 @@
-﻿using ProductsAPI.Interfaces;
+﻿using ProductsAPI.Interfaces.HttpClientContracts;
 
 namespace ProductsAPI.HttpClients
 {

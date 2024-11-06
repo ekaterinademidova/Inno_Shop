@@ -1,6 +1,4 @@
-﻿using UsersApplication.Interfaces;
-
-namespace UsersApplication.Users.Commands.UpdateUser
+﻿namespace UsersApplication.Users.Commands.UpdateUser
 {
     public class UpdateUserHandler(IUnitOfWork unitOfWork)
         : ICommandHandler<UpdateUserCommand, UpdateUserResult>
@@ -29,8 +27,8 @@ namespace UsersApplication.Users.Commands.UpdateUser
                 firstName: userDto.FirstName,
                 lastName: userDto.LastName,
                 email: userDto.Email,
-                password: userDto.Password,
-                role: userDto.Role
+                password: userDto.Password//,
+                //role: userDto.Role
             );
         }
     }

@@ -3,10 +3,6 @@ using UsersApplication.Users.Queries.GetUsers;
 
 namespace UsersAPI.Endpoints.Users
 {
-    // Accepts pagination parameters
-    // Constructs a GetUsersQuery with these parameters
-    // Retrieves the data and returns it in a paginated format
-
     //public record GetUsersRequest(PaginationRequest PaginationRequest);
     public record GetUsersResponse(PaginatedResult<UserDto> Users);
     public class GetUsers : ICarterModule

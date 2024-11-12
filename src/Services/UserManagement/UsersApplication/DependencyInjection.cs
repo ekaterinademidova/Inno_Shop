@@ -18,11 +18,18 @@ namespace UsersApplication
         public static IServiceCollection AddApplicationServices
             (this IServiceCollection services, IConfiguration configuration)
         {
+            //// Configuration of Email settings
+            //services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            //var emailSettings = configuration.GetSection("EmailSettings").Get<EmailSettings>()
+            //    ?? throw new InvalidOperationException("Email settings are not configured properly.");
+            //services.AddSingleton(emailSettings);
+
             // Configuration of Email settings
-            services.Configure<IEmailSettings>(configuration.GetSection("EmailSettings"));
-            var emailSettings = configuration.GetSection("EmailSettings").Get<IEmailSettings>()
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            var emailSettings = configuration.GetSection("EmailSettings").Get<EmailSettings>()
                 ?? throw new InvalidOperationException("Email settings are not configured properly.");
-            services.AddSingleton(emailSettings);
+            services.AddSingleton<IEmailSettings>(emailSettings);  // Регистрация через интерфейс
+
 
             // Configuration of JWT settings
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));

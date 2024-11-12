@@ -25,6 +25,7 @@ namespace UsersInfrastructure.Data.Extensions
         private static async Task SeedAsync(ApplicationDbContext context)
         {
             await SeedUsersAsync(context);
+            await SeedOperationTokensAsync(context);
         }
 
         private static async Task SeedUsersAsync(ApplicationDbContext context)
@@ -32,6 +33,15 @@ namespace UsersInfrastructure.Data.Extensions
             if (!await context.Users.AnyAsync())
             {
                 await context.Users.AddRangeAsync(InitialData.Users);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        private static async Task SeedOperationTokensAsync(ApplicationDbContext context)
+        {
+            if (!await context.OperationTokens.AnyAsync())
+            {
+                await context.OperationTokens.AddRangeAsync(InitialData.OperationTokens);
                 await context.SaveChangesAsync();
             }
         }

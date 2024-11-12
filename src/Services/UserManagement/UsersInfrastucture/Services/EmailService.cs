@@ -1,10 +1,8 @@
 ﻿using MimeKit;
 using UsersApplication.Interfaces;
-using UsersApplication.ValueObjects;
-using MailKit.Net.Smtp;
 using UsersApplication.Interfaces.ServiceContracts;
 using UsersApplication.Interfaces.WrappersContracts;
-using UsersInfrastructure.Wrappers;
+using UsersApplication.ValueObjects;
 
 namespace UsersInfrastructure.Services
 {
@@ -48,7 +46,8 @@ namespace UsersInfrastructure.Services
 
         public async Task<string> GenerateToken(UserId userId, OperationType operationType, CancellationToken cancellationToken)
         {
-            var token = OperationToken.Create(userId, operationType, 1440);
+            var operationTokenCode = Guid.NewGuid();
+            var token = OperationToken.Create(userId, operationTokenCode, operationType, 1440);
             await unitOfWork.OperationToken.AddAsync(token, cancellationToken);
             await unitOfWork.SaveAsync(cancellationToken);
 
@@ -78,13 +77,8 @@ namespace UsersInfrastructure.Services
 
         public async Task SendEmailAsync(MimeMessage message, CancellationToken cancellationToken)
         {
-            //using var client = new SmtpClient();
             try
             {
-                //await client.ConnectAsync(emailSettings.SmtpServer, emailSettings.SmtpPort, emailSettings.UseSsl, cancellationToken);
-                //await client.AuthenticateAsync(emailSettings.SmtpName, emailSettings.SmtpPassword, cancellationToken);
-                //await client.SendAsync(message, cancellationToken);
-
                 await smtpClientWrapper.ConnectAsync(emailSettings.SmtpServer, emailSettings.SmtpPort, emailSettings.UseSsl, cancellationToken);
                 await smtpClientWrapper.AuthenticateAsync(emailSettings.SmtpName, emailSettings.SmtpPassword, cancellationToken);
                 await smtpClientWrapper.SendAsync(message, cancellationToken);
@@ -95,7 +89,6 @@ namespace UsersInfrastructure.Services
             }
             finally
             {
-               // await client.DisconnectAsync(true, cancellationToken);
                 await smtpClientWrapper.DisconnectAsync(true, cancellationToken);
             }
         }

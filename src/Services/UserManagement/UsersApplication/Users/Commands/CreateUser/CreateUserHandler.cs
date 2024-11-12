@@ -11,14 +11,11 @@
             if (existingUser is not null) 
                 throw new UserInvalidDataException($"The user with email \"{command.User.Email})\" already exists.");
 
-            // create User entity from command object
             var user = CreateNewUser(command.User);
 
-            // save to database
             await unitOfWork.User.AddAsync(user, cancellationToken);
             await unitOfWork.SaveAsync(cancellationToken);
 
-            // return result
             return new CreateUserResult(user.Id.Value);
         }
 
@@ -29,8 +26,7 @@
                 firstName: userDto.FirstName,
                 lastName: userDto.LastName,
                 email: userDto.Email,
-                password: userDto.Password//,
-                //role: userDto.Role
+                password: userDto.Password
             );
 
             return newUser;

@@ -14,8 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-//----------------------------------------------------------------------------------
-// Настройка JWT аутентификации
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT settings are not configured properly.");
@@ -71,7 +69,7 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
-//----------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------- здесь ошибка при работе с докером будет
 builder.Services.AddHttpClient<IUsersServiceClient, UsersServiceClient>((serviceProvider, client) =>
 {
     client.Timeout = TimeSpan.FromSeconds(200);
@@ -84,10 +82,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-//----------------------------------------------------------------------------------
 app.UseAuthentication();
 app.UseAuthorization();
-//----------------------------------------------------------------------------------
 
 
 app.MapCarter();

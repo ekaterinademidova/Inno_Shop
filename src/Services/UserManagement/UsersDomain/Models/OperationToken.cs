@@ -11,7 +11,7 @@ namespace UsersDomain.Models
         public DateTime Expiration { get; set; } = default!;
         public bool IsValid() => DateTime.UtcNow <= Expiration;
 
-        public static OperationToken Create(UserId userId, OperationType operationType, int expirationMinutes = 60)
+        public static OperationToken Create(UserId userId, Guid code, OperationType operationType, int expirationMinutes = 60)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(userId.Value.ToString());
             if (!EnumTraits<OperationType>.IsValid((operationType)))
@@ -24,12 +24,13 @@ namespace UsersDomain.Models
             };
 
             token.SetUserId(userId);
-            token.SetCode(Guid.NewGuid());
+            token.SetCode(code);
             token.SetOperationType(operationType);
             token.SetExpiration(DateTime.UtcNow.AddMinutes(expirationMinutes));
 
             return token;
         }
+
         public void SetUserId(UserId userId)
         {
             UserId = userId;

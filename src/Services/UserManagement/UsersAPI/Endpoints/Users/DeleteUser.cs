@@ -2,11 +2,6 @@
 
 namespace UsersAPI.Endpoints.Users
 {
-    // Accepts the user ID as a parameter
-    // Maps the request to a DeleteUserCommand
-    // Uses MediatR to send the command to the corresponding handler
-    // Returns a success or not found response based on the outcome
-
     //public record DeleteUserRequest(Guid Id);
     public record DeleteUserResponse(bool IsSuccess);
     public class DeleteUser : ICarterModule

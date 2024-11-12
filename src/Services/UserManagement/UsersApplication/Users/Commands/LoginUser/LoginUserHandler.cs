@@ -17,7 +17,6 @@ namespace UsersApplication.Users.Commands.LoginUser
 
             var token = authenticationService.Authenticate(user);
 
-            // return result
             return new LoginUserResult(token);
         }
     }

@@ -11,4 +11,3 @@ global using BuildingBlocks.Exceptions;
 global using ProductsAPI.Models;
 global using ProductsAPI.Exceptions;
 global using ProductsAPI.Data;
-global using ProductsAPI.Dtos;

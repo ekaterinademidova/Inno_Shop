@@ -13,7 +13,6 @@ namespace UsersAPI.Endpoints.Users
         {
             app.MapGet("/users/reset-password", ([AsParameters] Guid token, ISender sender) =>
             {
-                // maybe need to add smth
                 return Results.Ok();
             })
             .WithName("ResetPassword GET")

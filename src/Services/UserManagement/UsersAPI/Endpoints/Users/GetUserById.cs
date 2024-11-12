@@ -2,10 +2,6 @@
 
 namespace UsersAPI.Endpoints.Users
 {
-    // Accepts a id parameter
-    // Constructs a GetUserByIdQuery
-    // Retrieves and returns matching user
-
     //public record GetUserByIdRequest();
     public record GetUserByIdResponse(UserDto User);
     public class GetUserById : ICarterModule

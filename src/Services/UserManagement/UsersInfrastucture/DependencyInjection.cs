@@ -30,14 +30,14 @@ namespace UsersInfrastructure
 
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                //options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseSqlServer(
                     connectionString,
                     sqlServerOptions => {
                         sqlServerOptions.EnableRetryOnFailure(
-                            maxRetryCount: 3, // Maximum number of retries
-                            maxRetryDelay: TimeSpan.FromSeconds(5), // Maximum delay between retries
-                            errorNumbersToAdd: null // Optionally specify error numbers to retry
+                            maxRetryCount: 3,
+                            maxRetryDelay: TimeSpan.FromSeconds(5),
+                            errorNumbersToAdd: null
                         );
                         sqlServerOptions.CommandTimeout(60);
                     }
@@ -59,7 +59,7 @@ namespace UsersInfrastructure
             {
                 client.Timeout = TimeSpan.FromSeconds(200);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.BaseAddress = new Uri("https://localhost:5050");                
+                client.BaseAddress = new Uri("https://localhost:5050"); // здесь не будет работать в docker        
             })
             .AddHttpMessageHandler<AuthorizationHeaderHandler>();
 

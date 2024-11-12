@@ -2,11 +2,6 @@
 
 namespace UsersAPI.Endpoints.Users
 {
-    // Accepts a CreateUserRequest object
-    // Maps the request to a CreateUserCommand
-    // Uses MediatR to send the command to the corresponding handler
-    // Returns a response with the created user's ID
-
     public record CreateUserRequest(UserDto User);
     public record CreateUserResponse(Guid Id);
     public class CreateUser : ICarterModule

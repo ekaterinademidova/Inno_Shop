@@ -13,7 +13,6 @@ namespace UsersApplication.Users.Commands.SeekPasswordReset
 
             await emailService.SendPasswordResetAsync(user, cancellationToken);
 
-            // return result
             return new SeekPasswordResetResult(true);
         }
     }

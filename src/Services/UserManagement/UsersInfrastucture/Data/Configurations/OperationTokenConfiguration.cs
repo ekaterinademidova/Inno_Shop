@@ -15,7 +15,6 @@ namespace UsersInfrastructure.Data.Configurations
             builder.HasOne<User>()
                 .WithMany()
                 .HasForeignKey(t => t.UserId);
-                //.OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(t => t.Code).IsRequired();
             builder.HasIndex(t => t.Code).IsUnique();

@@ -5,7 +5,6 @@
     {
         public async Task<UpdateUserResult> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
-            // update User entity from command object
             var userId = UserId.Of(command.User.Id);
             var user = await unitOfWork.User
                 .GetAsync(filter: u => u.Id == userId, cancellationToken: cancellationToken)
@@ -13,11 +12,9 @@
 
             UpdateUserWithNewValues(user, command.User);
 
-            // save to database
             unitOfWork.User.Update(user);
             await unitOfWork.SaveAsync(cancellationToken);
 
-            // return result
             return new UpdateUserResult(true);
         }
 
@@ -27,8 +24,7 @@
                 firstName: userDto.FirstName,
                 lastName: userDto.LastName,
                 email: userDto.Email,
-                password: userDto.Password//,
-                //role: userDto.Role
+                password: userDto.Password
             );
         }
     }

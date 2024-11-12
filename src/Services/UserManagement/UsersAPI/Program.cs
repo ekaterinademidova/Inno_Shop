@@ -3,7 +3,6 @@ using UsersApplication;
 using UsersInfrastructure;
 using UsersInfrastructure.Data.Extensions;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,3 +22,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
+public partial class Program { } // make the auto-generated Program accessible programmatically

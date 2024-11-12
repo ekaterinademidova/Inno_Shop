@@ -8,33 +8,34 @@ namespace UsersInfrastructure.Tests.Fixtures
 {
     public class ApplicationDbContextFixture : IDisposable
     {
-        private readonly string  _connectionString = "Server=localhost;Database=UsersDbTest;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True";
+        //private readonly string  _connectionString = "Server=localhost;Database=UsersDbTest;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True";
         private readonly DbContextOptions<ApplicationDbContext> _options;
         public ApplicationDbContext? Context { get; set; }
 
         public ApplicationDbContextFixture()
         {
             _options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer(_connectionString)
+                //.UseSqlServer(_connectionString)
+                .UseInMemoryDatabase("TestDatabase")
                 .Options;
 
             Context = new ApplicationDbContext(_options);
+            Context.Database.EnsureCreated();
         }
 
-        public void ClearDatabase()
-        {
-            if (Context is not null)
-            {
-                Context.Database.EnsureDeleted();
-                Context.Database.EnsureCreated();
-            }
-        }
+        //public void ClearDatabase()
+        //{
+        //    if (Context is not null)
+        //    {
+        //        Context.Database.EnsureDeleted();
+        //        Context.Database.EnsureCreated();
+        //    }
+        //}
 
         public void Dispose()
         {
             if (Context is not null)
             {
-                //ClearDatabase();
                 Context.Database.EnsureDeleted();
                 Context.Dispose();
             }

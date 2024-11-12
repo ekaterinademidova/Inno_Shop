@@ -21,7 +21,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ResetPassword
         {
             // Arrange
             var existingUser = _fixture.SetupExistingUser();
-            var existingOperationToken = OperationToken.Create(existingUser.Id, OperationType.PasswordReset);
+            var existingOperationToken = OperationToken.Create( existingUser.Id, Guid.NewGuid(), OperationType.PasswordReset);
             var validNewPassword = "NewPo=PF]PC6t.?8?ks)A6W";
             var command = new ResetPasswordCommand(existingOperationToken.Code, validNewPassword);
 
@@ -63,7 +63,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ResetPassword
 
             // Assert
             await action.Should().ThrowAsync<OperationTokenNotFoundException>()
-                .WithMessage($"Entity \"{nameof(OperationType)} [{OperationType.PasswordReset}]\" ({invalidTokenCode}) was not found.");
+                .WithMessage($"Entity \"{nameof(OperationToken)} [{OperationType.PasswordReset}]\" ({invalidTokenCode}) was not found.");
 
             _fixture.OperationTokenRepositoryMock_Verify_GetAsync(Times.Once());
             _fixture.UserRepositoryMock_Verify_GetAsync(Times.Never());
@@ -76,7 +76,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ResetPassword
         public async Task Should_Not_Reset_User_Password_For_Invalid_Operation_Token()
         {
             // Arrange
-            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), OperationType.PasswordReset);
+            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), Guid.NewGuid(), OperationType.PasswordReset);
             existingOperationToken.SetExpiration(DateTime.UtcNow.AddDays(-3));
             var validNewPassword = "NewPo=PF]PC6t.?8?ks)A6W";
             var command = new ResetPasswordCommand(existingOperationToken.Code, validNewPassword);
@@ -90,7 +90,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ResetPassword
 
             // Assert
             await action.Should().ThrowAsync<OperationTokenInvalidDataException>()
-                .WithMessage($"{nameof(OperationType)} [{OperationType.PasswordReset}] is invalid. The validity has expired.");
+                .WithMessage($"{nameof(OperationToken)} [{OperationType.PasswordReset}] is invalid. The validity has expired.");
 
             _fixture.OperationTokenRepositoryMock_Verify_GetAsync(Times.Once());
             _fixture.UserRepositoryMock_Verify_GetAsync(Times.Never());
@@ -103,7 +103,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ResetPassword
         public async Task Should_Not_Reset_User_Password_For_Non_Existing_User()
         {
             // Arrange
-            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), OperationType.PasswordReset);
+            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), Guid.NewGuid(), OperationType.PasswordReset);
             var validNewPassword = "NewPo=PF]PC6t.?8?ks)A6W";
             var command = new ResetPasswordCommand(existingOperationToken.Code, validNewPassword);
 

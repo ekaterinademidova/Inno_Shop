@@ -21,7 +21,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ConfirmUserEmail
         {
             // Arrange
             var existingUser = _fixture.SetupExistingUser();
-            var existingOperationToken = OperationToken.Create(existingUser.Id, OperationType.EmailConfirmation);
+            var existingOperationToken = OperationToken.Create(existingUser.Id, Guid.NewGuid(), OperationType.EmailConfirmation);
             var command = new ConfirmUserEmailCommand(existingOperationToken.Code);
 
             _fixture.OperationTokenRepositoryMock_Setup_GetAsync_Returns_ExistingOperationToken(existingOperationToken);
@@ -61,7 +61,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ConfirmUserEmail
 
             // Assert
             await action.Should().ThrowAsync<OperationTokenNotFoundException>()
-                .WithMessage($"Entity \"{nameof(OperationType)} [{OperationType.EmailConfirmation}]\" ({invalidTokenCode}) was not found.");
+                .WithMessage($"Entity \"{nameof(OperationToken)} [{OperationType.EmailConfirmation}]\" ({invalidTokenCode}) was not found.");
 
             _fixture.OperationTokenRepositoryMock_Verify_GetAsync(Times.Once());
             _fixture.UserRepositoryMock_Verify_GetAsync(Times.Never());
@@ -74,7 +74,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ConfirmUserEmail
         public async Task Should_Not_Confirm_User_Email_For_Invalid_Operation_Token()
         {
             // Arrange
-            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), OperationType.EmailConfirmation);
+            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), Guid.NewGuid(), OperationType.EmailConfirmation);
             existingOperationToken.SetExpiration(DateTime.UtcNow.AddDays(-3));
             var command = new ConfirmUserEmailCommand(existingOperationToken.Code);
 
@@ -87,7 +87,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ConfirmUserEmail
 
             // Assert
             await action.Should().ThrowAsync<OperationTokenInvalidDataException>()
-                .WithMessage($"{nameof(OperationType)} [{OperationType.EmailConfirmation}] is invalid. The validity has expired.");
+                .WithMessage($"{nameof(OperationToken)} [{OperationType.EmailConfirmation}] is invalid. The validity has expired.");
 
             _fixture.OperationTokenRepositoryMock_Verify_GetAsync(Times.Once());
             _fixture.UserRepositoryMock_Verify_GetAsync(Times.Never());
@@ -100,7 +100,7 @@ namespace UsersApplication.Tests.CommandHandlers.Users.ConfirmUserEmail
         public async Task Should_Not_Confirm_User_Email_For_Non_Existing_User()
         {
             // Arrange
-            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), OperationType.EmailConfirmation);
+            var existingOperationToken = OperationToken.Create(UserId.Of(Guid.NewGuid()), Guid.NewGuid(), OperationType.EmailConfirmation);
             var command = new ConfirmUserEmailCommand(existingOperationToken.Code);
 
             _fixture.OperationTokenRepositoryMock_Setup_GetAsync_Returns_ExistingOperationToken(existingOperationToken);

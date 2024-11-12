@@ -36,7 +36,6 @@ namespace UsersApplication.Users.Commands.ResetPassword
             unitOfWork.OperationToken.Remove(token);
             await unitOfWork.SaveAsync(cancellationToken);
 
-            // return result
             return new ResetPasswordResult(true);
         }
     }

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using UsersApplication.Interfaces.ServiceContracts;
 using UsersDomain.Constants;
-using UsersDomain.Models;
 using UsersInfrastructure.Data;
 using UsersInfrastructure.Data.Extensions;
 
@@ -12,7 +11,7 @@ namespace UsersAPI.IntegrationTests
 {
     public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
-        public string CurrentUserJwtToken { get; set; }
+        public string? CurrentUserJwtToken { get; set; }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             base.ConfigureWebHost(builder);

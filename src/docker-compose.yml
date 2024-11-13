@@ -22,6 +22,12 @@ services:
       context: .
       dockerfile: Services/UserManagement/UsersAPI/Dockerfile
 
+  yarpapigateway:
+    image: ${DOCKER_REGISTRY-}yarpapigateway
+    build:
+      context: .
+      dockerfile: ApiGateways/YarpApiGateway/Dockerfile
+
 volumes:
   postgres_products:
 

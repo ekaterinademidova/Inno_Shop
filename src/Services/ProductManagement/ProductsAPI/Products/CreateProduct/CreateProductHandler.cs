@@ -1,6 +1,5 @@
 ﻿using ProductsAPI.Interfaces.HttpClientContracts;
 using ProductsAPI.Interfaces.ServiceContracts;
-using System.Security.Claims;
 
 namespace ProductsAPI.Products.CreateProduct
 {
@@ -24,9 +23,6 @@ namespace ProductsAPI.Products.CreateProduct
     {
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            //var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)) 
-            //    ?? throw new UnauthorizedAccessException("User ID not found in token.");
-            //var userId = Guid.Parse(userIdClaim.Value);
             var userId = apiUserService.GetUserId();
 
             bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
@@ -35,7 +31,6 @@ namespace ProductsAPI.Products.CreateProduct
                 throw new UnauthorizedAccessException("User is not authorized to create products.");
             }
                         
-            // create Product entity from command object
             var product = new Product
             {
                 Name = command.Name,
@@ -48,11 +43,9 @@ namespace ProductsAPI.Products.CreateProduct
                 LastModified = DateTime.UtcNow
             };
 
-            // save to database
             session.Store(product);
             await session.SaveChangesAsync(cancellationToken);
 
-            // return CreateProductResult result
             return new CreateProductResult(product.Id);
         }
     }

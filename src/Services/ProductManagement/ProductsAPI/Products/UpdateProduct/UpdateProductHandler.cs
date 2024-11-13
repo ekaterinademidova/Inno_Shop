@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using ProductsAPI.Interfaces.HttpClientContracts;
+﻿using ProductsAPI.Interfaces.HttpClientContracts;
 using ProductsAPI.Interfaces.ServiceContracts;
-using System.Security.Claims;
 
 namespace ProductsAPI.Products.UpdateProduct
 {
@@ -29,9 +27,6 @@ namespace ProductsAPI.Products.UpdateProduct
             var product = await session.LoadAsync<Product>(command.Id, cancellationToken)
                 ?? throw new ProductNotFoundException(command.Id);
 
-            //var userIdClaim = (httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier))
-            //    ?? throw new UnauthorizedAccessException("User ID not found in token.");
-            //var userId = Guid.Parse(userIdClaim.Value);
             var userId = apiUserService.GetUserId();
             bool userExists = await usersServiceClient.GetUserByIdAsync(userId);
 

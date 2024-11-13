@@ -69,14 +69,12 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
-//---------------------------------------------------------------------------------- здесь ошибка при работе с докером будет
 builder.Services.AddHttpClient<IUsersServiceClient, UsersServiceClient>((serviceProvider, client) =>
 {
     client.Timeout = TimeSpan.FromSeconds(200);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
-    client.BaseAddress = new Uri("https://localhost:5051");
+    client.BaseAddress = new Uri("https://localhost:5051");  // must to be changed for docker     
 });
-//----------------------------------------------------------------------------------
 
 var app = builder.Build();
 

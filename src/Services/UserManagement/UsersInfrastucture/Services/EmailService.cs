@@ -56,7 +56,7 @@ namespace UsersInfrastructure.Services
 
         public static string GenerateLink(string pathSegment, string token)
         {
-            return $"https://localhost:5051/users/{pathSegment}?token={token}";
+            return $"https://localhost:5051/users/{pathSegment}?token={token}";  // must to be changed for docker     
         }
 
         public MimeMessage CreateMimeMessage(User user, string link, string subject, string description)

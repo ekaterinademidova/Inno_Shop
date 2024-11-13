@@ -59,7 +59,7 @@ namespace UsersInfrastructure
             {
                 client.Timeout = TimeSpan.FromSeconds(200);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-                client.BaseAddress = new Uri("https://localhost:5050"); // здесь не будет работать в docker        
+                client.BaseAddress = new Uri("https://localhost:5050"); // must to be changed for docker       
             })
             .AddHttpMessageHandler<AuthorizationHeaderHandler>();
 
